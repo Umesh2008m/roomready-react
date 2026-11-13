@@ -12,7 +12,7 @@
 - [x] Ticket 4 · Finding one room
 - [x] Ticket 5 · The front desk checks a guest out
 - [x] Ticket 6 · Taking back the key
-- [ ] Ticket 7 · Assigning the work
+- [x] Ticket 7 · Assigning the work
 - [ ] Ticket 8 · The housekeeper's rooms
 - [ ] Ticket 9 · Inspecting
 - [ ] Ticket 10 · Ready before arrival

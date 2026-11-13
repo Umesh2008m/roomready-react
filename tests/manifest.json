@@ -1568,5 +1568,188 @@
     "criterion": 10,
     "checked_by": "browser",
     "reason": "On a phone the panel moving under the form and the row of doors scrolling sideways are layout, which a pretend browser does not draw; the tap itself is tested."
+  },
+  {
+    "ticket": "F-07",
+    "test": "the first card reads '1 Assign a room' with its hint; Room shows the first dirty room and Housekeeper shows Sunita",
+    "criterion": 0,
+    "what_should_happen": "Rooms 401 and 115 are dirty when Grace opens Work under \"Harbour View · housekeeping\". The first card reads \"1 Assign a room\" with its hint about dirty rooms coming first. Its Room drop-down already shows Room 115, the first dirty room, and its Housekeeper drop-down shows Sunita.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Harbour View · housekeeping",
+      "Work",
+      "Assign a room",
+      "A dirty room goes to one housekeeper. Dirty rooms are listed first.",
+      "Room",
+      "Housekeeper",
+      "Room {no}"
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "test": "the Room list holds every room with its type and state, dirty first, then to inspect, assigned, cleaning, ready and occupied, each in number order",
+    "criterion": 1,
+    "what_should_happen": "Rooms are put into every state before Work opens. The Room list holds all sixty rooms, each as \"Room\" and its number with its type and state under it, such as \"Deluxe · Dirty\". Dirty rooms come first, then to inspect, assigned, cleaning, ready and occupied, each group in number order.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/components/Dropdown.jsx"
+    ],
+    "exact_words": [
+      "Room",
+      "Room {no}",
+      "{type} · {state}"
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "test": "the Housekeeper list holds the nine housekeepers by name, each with her code, HK01 to HK09",
+    "criterion": 2,
+    "what_should_happen": "Grace opens the Housekeeper drop-down. It lists nine housekeepers by name, each with her code from HK01 to HK09 in order, Grace first and Sunita third.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Housekeeper",
+      "Grace",
+      "Sunita"
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "test": "assigning dirty 214 to Sunita reads '214 is Sunita’s: assignment AS001.', and the board shows it on the door and her chip",
+    "criterion": 3,
+    "what_should_happen": "Room 214 is dirty and Grace picks it and Sunita and presses \"Assign\". A line reads \"214 is Sunita’s: assignment AS001.\" On the board, door 214 shows Assigned with \"Sunita · 0m\", and Sunita's chip shows 214.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Sunita",
+      "Assign",
+      "{room} is {name}’s: assignment {id}.",
+      "The board",
+      "Room {no}, {type}, {state}"
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "criterion": 3,
+    "checked_by": "browser",
+    "reason": "The answer line being green is a colour; its words are tested."
+  },
+  {
+    "ticket": "F-07",
+    "test": "assigning 214 again when it is already Sunita's reads 'Somebody is already on that room', and nothing changes",
+    "criterion": 4,
+    "what_should_happen": "Room 214 is already Sunita's and Grace assigns it again, this time to herself. A line reads \"Somebody is already on that room\" and that the room is already Sunita’s and goes to one housekeeper at a time On the board Sunita still holds 214 and Grace is still free.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Grace",
+      "Assign",
+      "Somebody is already on that room",
+      "This room is already {name}’s; it goes to one housekeeper at a time.",
+      "The board",
+      "free"
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "test": "assigning a room whose guest is still in reads 'A step was skipped' and 'This room still has its guest; check the guest out first.'",
+    "criterion": 5,
+    "what_should_happen": "Room 214's guest is still in when Grace assigns it. A line reads \"A step was skipped\", with \"This room still has its guest\" and \"check the guest out first\".",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Assign",
+      "A step was skipped",
+      "This room still has its guest",
+      "check the guest out first"
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "test": "assigning a room that is already ready reads 'A step was skipped' and 'This room is already ready; nothing more is needed until the next guest checks in.'",
+    "criterion": 6,
+    "what_should_happen": "Room 214 has already been cleaned, inspected and made ready when Grace assigns it. A line reads \"A step was skipped\", with \"This room is already ready\" and \"nothing more is needed until the next guest checks in\".",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Assign",
+      "A step was skipped",
+      "This room is already ready",
+      "nothing more is needed until the next guest checks in"
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "criterion": 4,
+    "checked_by": "browser",
+    "reason": "The refusal line being orange is a colour; its words are tested here and in the next two criteria."
+  },
+  {
+    "ticket": "F-07",
+    "test": "changing the room or the housekeeper takes the green or red line away",
+    "criterion": 7,
+    "what_should_happen": "After assigning 214, picking another room takes the green line away. After a refusal, picking another housekeeper takes the orange line away too.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Assign",
+      "{room} is {name}’s: assignment {id}.",
+      "Somebody is already on that room",
+      "Grace"
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "test": "dirty 214's drawer on the board says 'Dirty. Assign it on Work.', and the link opens Work with Room 214 chosen",
+    "criterion": 8,
+    "what_should_happen": "Rooms 115 and 214 are dirty and Grace opens door 214's drawer on the board. It says \"Dirty. Assign it on Work.\" Clicking \"Assign it on Work\" opens Work at /supervisor/work?room=214 with Room 214, not 115, already chosen in the Assign card.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Dirty.",
+      "Assign it on Work",
+      "Room {no}",
+      "Room {no}, {type}, {state}"
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "test": "by keyboard: a drop-down opens with Enter, Space or ↓, moves with ↓, picks with Enter and closes with Esc, and Enter presses Assign",
+    "criterion": 9,
+    "what_should_happen": "Using only the keyboard, Grace tabs to the Room drop-down, where ↓ opens it and Esc closes it, Space opens it and Esc closes it, and Enter opens it again. Moving down to Room 214 and pressing Enter picks it, Tab then goes to Housekeeper and on to \"Assign\", and Enter presses it, so the green line names 214 and Sunita.",
+    "look_at": [
+      "src/components/Dropdown.jsx",
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Assign",
+      "{room} is {name}’s: assignment {id}."
+    ]
+  },
+  {
+    "ticket": "F-07",
+    "criterion": 10,
+    "checked_by": "browser",
+    "reason": "Below 1100px the Work cards stacking one per row is layout, which a pretend browser does not draw."
   }
 ]

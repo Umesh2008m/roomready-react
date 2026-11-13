@@ -109,6 +109,7 @@ function RoomDrawer({ no, onClose }) {
               {room.assignedTo && <div><dt>On it</dt><dd>{room.assignedTo}</dd></div>}
               {room.sinceMinutes != null && <div><dt>For</dt><dd className="mono">{room.sinceMinutes} min</dd></div>}
             </dl>
+            {room.state === 'dirty' && <p className="drawer-empty">Dirty. <Link to={`/supervisor/work?room=${room.no}`}>Assign it on Work</Link>.</p>}
           </>
         )}
       </aside>
@@ -237,7 +238,7 @@ export default function Board() {
       </div>
 
       <ul className="legend legend-below legend-wrap" aria-label="Legend">
-        {STATES.filter((s) => s.id !== 'out_of_order').map((s) => <li key={s.id}><span className={`dot is-${s.id}`} /> {s.name}</li>)}
+        {STATES.filter((s) => s.id !== 'out_of_order').map((s) => <li key={s.id}><span className="dot is-${s.id}" /> {s.name}</li>)}
       </ul>
 
       {selected && <RoomDrawer no={selected} onClose={() => setSelected(null)} />}

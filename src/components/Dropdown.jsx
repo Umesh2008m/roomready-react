@@ -5,9 +5,9 @@ import useDismiss from './useDismiss.js';
 /**
  * The app's own drop-down, in place of the browser's: a button showing the choice, and a list that
  * opens below it. A click outside or Esc closes it; the arrow keys move through it, Enter picks.
- * `options` are { value, label }.
+ * `options` are { value, label, note? }.
  */
-export default function Dropdown({ value, options, onChange, label }) {
+export default function Dropdown({ value, options, onChange, label, id }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const box = useRef(null);
@@ -34,7 +34,7 @@ export default function Dropdown({ value, options, onChange, label }) {
 
   return (
     <div className={`dropdown${open ? ' is-open' : ''}`} ref={box}>
-      <button type="button" className="dropdown-button" onClick={toggle} onKeyDown={onKey}
+      <button id={id} type="button" className="dropdown-button" onClick={toggle} onKeyDown={onKey}
         aria-haspopup="listbox" aria-expanded={open} aria-label={current ? `${label}: ${current.label}` : label}>
         <span className="dropdown-value">{current?.label ?? 'Choose…'}</span>
         <Icon name="chevron" size={14} className="dropdown-chevron" />
@@ -47,6 +47,7 @@ export default function Dropdown({ value, options, onChange, label }) {
               onMouseEnter={() => setActive(i)} onMouseDown={(e) => { e.preventDefault(); pick(o); }}>
               <span className="dropdown-option-text">
                 <span className="dropdown-option-label">{o.label}</span>
+                {o.note && <span className="dropdown-option-note">{o.note}</span>}
               </span>
               {o.value === value && <Icon name="check" size={14} strokeWidth={2.4} />}
             </li>
