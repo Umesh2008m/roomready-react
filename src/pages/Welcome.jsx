@@ -1,17 +1,10 @@
 import { Link } from 'react-router-dom';
+import { Avatar } from '../components/Header.jsx';
 import Icon from '../components/Icon.jsx';
 import RoomCell from '../components/RoomCell.jsx';
 import { PROPERTY } from '../data/hotel.js';
 import { PERSONAS } from '../data/personas.js';
 import { useGet } from '../state/AppContext.jsx';
-
-function Avatar({ persona, size = 34 }) {
-  return (
-    <span className="avatar" style={{ '--avatar': persona.color, width: size, height: size, fontSize: size * 0.42 }}>
-      {persona.name[0].toUpperCase()}
-    </span>
-  );
-}
 
 /** The first screen: what RoomReady is, a slice of a real corridor, and who you want to be. */
 export default function Welcome() {

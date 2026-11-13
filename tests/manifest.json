@@ -218,5 +218,295 @@
     "criterion": 10,
     "checked_by": "browser",
     "reason": "At phone width the cards stacking one per row and nothing scrolling sideways are layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-02",
+    "test": "on the welcome page the header has the logo with \"Harbour View · 60 rooms\" and no ← or person button",
+    "criterion": 0,
+    "what_should_happen": "On the welcome page the header shows the RoomReady logo with \"Harbour View · 60 rooms\" beside it. Nobody has been picked yet, so there is no back button and no person button.",
+    "look_at": [
+      "src/components/Header.jsx"
+    ],
+    "exact_words": [
+      "RoomReady",
+      "Harbour View · 60 rooms",
+      "RoomReady home",
+      "Back to the home page"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "the logo on a person's screen opens the welcome page",
+    "criterion": 1,
+    "what_should_happen": "On Grace's, Pradeep's, Sunita's and Mr Menon's screens, the RoomReady logo is a link home. Clicking it opens the welcome page.",
+    "look_at": [
+      "src/components/Header.jsx"
+    ],
+    "exact_words": [
+      "RoomReady home",
+      "Who are you today?"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "the ← button (Back to the home page) on a person's screen opens the welcome page",
+    "criterion": 2,
+    "what_should_happen": "On every person's screen there is a ← button at the left of the header, named \"Back to the home page\". Clicking it opens the welcome page.",
+    "look_at": [
+      "src/components/Header.jsx"
+    ],
+    "exact_words": [
+      "Back to the home page",
+      "Who are you today?"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "on Pradeep's screen the person button shows his avatar, his name and 'Front desk'",
+    "criterion": 3,
+    "what_should_happen": "On Pradeep's Check out screen the right of the header has a button for the person you are. It shows his round avatar with the letter P, his name and \"Front desk\".",
+    "look_at": [
+      "src/components/Header.jsx",
+      "src/data/personas.js"
+    ],
+    "exact_words": [
+      "Pradeep",
+      "Front desk"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "criterion": 3,
+    "checked_by": "browser",
+    "reason": "The avatar being a round badge in the person's own colour is a drawing and a colour."
+  },
+  {
+    "ticket": "F-02",
+    "test": "the person button opens \"View the hotel as\" with the four people and their roles",
+    "criterion": 4,
+    "what_should_happen": "Clicking the person button on Grace's board opens a menu headed \"View the hotel as\". It lists the four people in order, Grace, Pradeep, Sunita and Mr Menon, each with their role.",
+    "look_at": [
+      "src/components/Header.jsx",
+      "src/data/personas.js"
+    ],
+    "exact_words": [
+      "View the hotel as",
+      "Grace",
+      "Supervisor · HK01",
+      "Pradeep",
+      "Front desk",
+      "Sunita",
+      "Housekeeper · HK03",
+      "Mr Menon",
+      "General manager"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "criterion": 4,
+    "checked_by": "browser",
+    "reason": "The tick beside the current person is a drawing that screen readers skip, so only a real browser shows it."
+  },
+  {
+    "ticket": "F-02",
+    "test": "choosing Pradeep on Grace's board closes the menu, opens Check out and shows Pradeep in the header",
+    "criterion": 5,
+    "what_should_happen": "With the menu open on Grace's board, choose Pradeep. The menu closes, his Check out screen opens at /desk/checkout, and the header's person button now shows Pradeep instead of Grace.",
+    "look_at": [
+      "src/components/Header.jsx"
+    ],
+    "exact_words": [
+      "Grace",
+      "Pradeep"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "Esc closes the menu and you stay on the same screen",
+    "criterion": 6,
+    "what_should_happen": "Open the person menu on Grace's board and press Esc. The menu closes and you are still on the board, as Grace.",
+    "look_at": [
+      "src/components/Header.jsx",
+      "src/components/useDismiss.js"
+    ],
+    "exact_words": [
+      "Grace"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "a click outside the menu closes it and you stay on the same screen",
+    "criterion": 6,
+    "what_should_happen": "Open the person menu on Grace's board and click somewhere on the page outside it. The menu closes and you are still on the board, as Grace.",
+    "look_at": [
+      "src/components/Header.jsx",
+      "src/components/useDismiss.js"
+    ],
+    "exact_words": [
+      "Grace"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "Grace's title row has the tabs 'The board' and 'Work', the current one marked, and each opens the other",
+    "criterion": 7,
+    "what_should_happen": "On Grace's board two tabs read \"The board\" and \"Work\", and The board is marked as the page you are on. Clicking Work opens Grace's Work screen and marks Work instead, and clicking The board goes back to /supervisor/board.",
+    "look_at": [
+      "src/components/SectionTabs.jsx",
+      "src/data/personas.js"
+    ],
+    "exact_words": [
+      "The board",
+      "Work"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "criterion": 7,
+    "checked_by": "browser",
+    "reason": "The current tab being filled with Grace's colour is a colour; which tab is current is tested."
+  },
+  {
+    "ticket": "F-02",
+    "test": "Pradeep's, Sunita's and Mr Menon's screens have no tabs",
+    "criterion": 8,
+    "what_should_happen": "Pradeep, Sunita and Mr Menon each have one screen, and one screen is not a choice. Their title rows show no tabs at all, not even one for their own screen.",
+    "look_at": [
+      "src/components/SectionTabs.jsx",
+      "src/pages/manager/Rooms.jsx",
+      "src/pages/desk/Checkout.jsx",
+      "src/pages/housekeeper/MyRooms.jsx"
+    ],
+    "exact_words": [
+      "Pradeep",
+      "Sunita",
+      "Mr Menon",
+      "The board",
+      "Work",
+      "Check out",
+      "My rooms",
+      "Rooms"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "with every guest still in the Work tab has no badge",
+    "criterion": 9,
+    "what_should_happen": "On a fresh start no room is dirty and none waits for inspection. Once the rooms are read, the Work tab reads just \"Work\", with no number beside it.",
+    "look_at": [
+      "src/components/SectionTabs.jsx"
+    ],
+    "exact_words": [
+      "Work"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "with two rooms dirty and one waiting for inspection the Work tab counts 3",
+    "criterion": 10,
+    "what_should_happen": "Rooms 101 and 102 are dirty, and 103 has been cleaned and waits for inspection. The Work tab carries a badge that reads 3.",
+    "look_at": [
+      "src/components/SectionTabs.jsx"
+    ],
+    "exact_words": [
+      "Work"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "the Work badge changes when one of its rooms moves on, without anything clicked here",
+    "criterion": 10,
+    "what_should_happen": "Three rooms are dirty and the Work tab reads 3. Somebody elsewhere gives room 101 to a housekeeper, and within twenty seconds the badge reads 2 without anything clicked on this screen.",
+    "look_at": [
+      "src/components/SectionTabs.jsx",
+      "src/state/AppContext.jsx"
+    ],
+    "exact_words": [
+      "Work"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "/supervisor, /desk and /manager land on /supervisor/board, /desk/checkout and /manager/rooms",
+    "criterion": 11,
+    "what_should_happen": "Typing a short address opens that person's first screen. The address /supervisor lands on /supervisor/board, /desk on /desk/checkout and /manager on /manager/rooms.",
+    "look_at": [
+      "src/App.jsx"
+    ],
+    "exact_words": []
+  },
+  {
+    "ticket": "F-02",
+    "test": "an address the app does not know, such as /kitchen, lands on the welcome page",
+    "criterion": 12,
+    "what_should_happen": "Typing an address the app does not have, such as /kitchen, does not leave you on an empty page. You land on the welcome page instead.",
+    "look_at": [
+      "src/App.jsx"
+    ],
+    "exact_words": [
+      "Who are you today?"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "criterion": 13,
+    "checked_by": "browser",
+    "reason": "The app's own slim scroll bar, dragging it and clicking its track need a real page height and a real mouse; a pretend browser has no layout."
+  },
+  {
+    "ticket": "F-02",
+    "criterion": 14,
+    "checked_by": "browser",
+    "reason": "Whether a page fits in the window depends on real heights, which a pretend browser does not measure."
+  },
+  {
+    "ticket": "F-02",
+    "test": "by keyboard: Tab to the person button and Enter opens the menu",
+    "criterion": 15,
+    "what_should_happen": "On Pradeep's screen, press Tab until the person button has the focus. Pressing Enter opens the \"View the hotel as\" menu.",
+    "look_at": [
+      "src/components/Header.jsx"
+    ],
+    "exact_words": [
+      "Pradeep",
+      "View the hotel as"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "by keyboard: Tab reaches each person in the menu and Enter picks one",
+    "criterion": 15,
+    "what_should_happen": "With the menu open from the keyboard, Tab reaches each of the four people in turn. With the focus on Sunita, Enter closes the menu and opens her screen, and the header shows Sunita.",
+    "look_at": [
+      "src/components/Header.jsx"
+    ],
+    "exact_words": [
+      "Pradeep",
+      "Sunita"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "test": "by keyboard: Esc closes the menu and puts the focus back on the person button",
+    "criterion": 15,
+    "what_should_happen": "Open the menu from the keyboard and Tab into it. Esc closes the menu, the focus goes back to the person button, and you stay on Pradeep's screen.",
+    "look_at": [
+      "src/components/Header.jsx"
+    ],
+    "exact_words": [
+      "Pradeep"
+    ]
+  },
+  {
+    "ticket": "F-02",
+    "criterion": 16,
+    "checked_by": "browser",
+    "reason": "Below 1024px hiding the hotel line and the person's name and role is done by the styles, which a pretend browser does not apply."
+  },
+  {
+    "ticket": "F-02",
+    "criterion": 17,
+    "checked_by": "browser",
+    "reason": "The header wrapping, the menu scrolling inside itself and the tabs scrolling sideways at phone width are layout, which a pretend browser does not draw."
   }
 ]
