@@ -1751,5 +1751,284 @@
     "criterion": 10,
     "checked_by": "browser",
     "reason": "Below 1100px the Work cards stacking one per row is layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-08",
+    "test": "with no room assigned to her, Sunita's screen says 'No room for you yet'",
+    "criterion": 0,
+    "what_should_happen": "Nobody has given Sunita a room when she opens My rooms under \"Sunita · HK03\". The screen says \"No room for you yet\" and that a room Grace assigns will appear here with Start and Finish, and there is no Start button.",
+    "look_at": [
+      "src/pages/housekeeper/MyRooms.jsx"
+    ],
+    "exact_words": [
+      "Sunita · HK03",
+      "My rooms",
+      "No room for you yet",
+      "When Grace assigns you a dirty room, it appears here with Start and Finish.",
+      "Start"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "with 214 assigned to her, a card shows door 214, 'Room 214 · Assigned', what to do, and Start, Finish and 'Tick it myself'",
+    "criterion": 1,
+    "what_should_happen": "Grace assigns dirty 214 to Sunita on Work and then switches to Sunita. Her card shows door 214 and the heading \"Room 214 · Assigned\", with \"Yours to clean. Press Start when you open the door.\" Three buttons can be pressed: Start, Finish and \"Tick it myself\".",
+    "look_at": [
+      "src/pages/housekeeper/MyRooms.jsx",
+      "src/components/RoomCell.jsx"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Assigned",
+      "Yours to clean. Press Start when you open the door.",
+      "Start",
+      "Finish",
+      "Tick it myself",
+      "No room for you yet",
+      "Room",
+      "Housekeeper",
+      "Sunita",
+      "Grace",
+      "Assign",
+      "{room} is {name}’s: assignment {id}.",
+      "Dlx"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "Start reads 'Started at 10:52.', the heading says Cleaning and the line says the clock is running",
+    "criterion": 2,
+    "what_should_happen": "At 10:52 Sunita presses Start on her room. A line reads \"Started at 10:52.\", the heading becomes \"Room 214 · Cleaning\", and the line above the buttons reads \"The clock is running. Press Finish when the room is done.\"",
+    "look_at": [
+      "src/pages/housekeeper/MyRooms.jsx"
+    ],
+    "exact_words": [
+      "Start",
+      "Started at {time}.",
+      "Room {no}",
+      "Cleaning",
+      "The clock is running. Press Finish when the room is done."
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "criterion": 2,
+    "checked_by": "browser",
+    "reason": "The answer line being green is a colour; its words are tested here and in the next criterion."
+  },
+  {
+    "ticket": "F-08",
+    "test": "Finish after 23 minutes reads 'Finished: 23 min.', the heading says To inspect and the line says somebody else will inspect it",
+    "criterion": 3,
+    "what_should_happen": "Sunita started 214 and presses Finish 23 minutes later. A line reads \"Finished: 23 min.\", the heading becomes \"Room 214 · To inspect\", and the line reads \"Done and timed. Somebody else will inspect it.\"",
+    "look_at": [
+      "src/pages/housekeeper/MyRooms.jsx"
+    ],
+    "exact_words": [
+      "Start",
+      "Finish",
+      "Finished: {n} min.",
+      "Room {no}",
+      "To inspect",
+      "Done and timed. Somebody else will inspect it."
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "Finish before Start reads 'A step was skipped' and 'This room is assigned, but its clean has not started; start the clean first.'",
+    "criterion": 4,
+    "what_should_happen": "Room 214 is assigned to Sunita but she has not started it, and she presses Finish. A line reads \"A step was skipped\", with \"This room is assigned, but its clean has not started\" and \"start the clean first\". The room stays Assigned.",
+    "look_at": [
+      "src/pages/housekeeper/MyRooms.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Finish",
+      "A step was skipped",
+      "This room is assigned, but its clean has not started",
+      "start the clean first",
+      "Room {no}",
+      "Assigned"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "Start a second time reads 'A step was skipped' and 'This room is already being cleaned; finish the clean first.'",
+    "criterion": 5,
+    "what_should_happen": "Sunita has already started 214 and presses Start again. A line reads \"A step was skipped\", with \"This room is already being cleaned\" and \"finish the clean first\".",
+    "look_at": [
+      "src/pages/housekeeper/MyRooms.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Start",
+      "A step was skipped",
+      "This room is already being cleaned",
+      "finish the clean first",
+      "Room {no}",
+      "Cleaning"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "'Tick it myself' on her own finished clean reads 'Somebody else must inspect it', and 214 stays To inspect",
+    "criterion": 6,
+    "what_should_happen": "Sunita has started and finished 214 and presses \"Tick it myself\". A line reads \"Somebody else must inspect it\" and explains that the inspector cleaned this room. The heading still reads \"Room 214 · To inspect\".",
+    "look_at": [
+      "src/pages/housekeeper/MyRooms.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Start",
+      "Finish",
+      "Tick it myself",
+      "Somebody else must inspect it",
+      "The inspector cleaned this room; somebody else must inspect it",
+      "Room {no}",
+      "Cleaning",
+      "To inspect"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "once somebody else has inspected the room she finished, Sunita opening My rooms sees 'No room for you yet' again",
+    "criterion": 7,
+    "what_should_happen": "Sunita starts and finishes 214, and then somebody else inspects it. When she goes home and opens My rooms again, it says \"No room for you yet\", and room 214 is no longer on her screen.",
+    "look_at": [
+      "src/pages/housekeeper/MyRooms.jsx"
+    ],
+    "exact_words": [
+      "Start",
+      "Finish",
+      "Room {no}",
+      "Cleaning",
+      "To inspect",
+      "No room for you yet",
+      "Back to the home page",
+      "Continue as {name}",
+      "Sunita"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "after Assign on Work, '2 Start and finish' holds AS001 and reads 'Room 214 is now Assigned.'",
+    "criterion": 8,
+    "what_should_happen": "Grace has just pressed Assign for 214 on Work. The second card, \"2 Start and finish\", has its hint about the assignment being filled in, its Assignment box already holds AS001, and a line reads \"Room 214 is now Assigned.\"",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Start and finish",
+      "Assigning a room fills in its assignment here. Start begins the clock; Finish stops it.",
+      "Assignment",
+      "AS001",
+      "Room {no} is now {state}."
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "on Work, Start then Finish read 'Started at 10:52.' and 'Finished: 23 min clean, stamped once.', and the room line follows",
+    "criterion": 9,
+    "what_should_happen": "With AS001 in the box, Grace presses Start at 10:52 and a line reads \"Started at 10:52.\", with \"Room 214 is now Cleaning.\" under it. Pressing Finish 23 minutes later reads \"Finished: 23 min clean, stamped once.\", and the room line becomes \"Room 214 is now To inspect.\"",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Start",
+      "Finish",
+      "Started at {time}.",
+      "Finished: {n} min clean, stamped once.",
+      "Room {no} is now {state}."
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "on Work, with the Assignment box empty, Start and Finish are greyed out and do nothing",
+    "criterion": 10,
+    "what_should_happen": "Nothing has been assigned, so the Assignment box on Work is empty. Start and Finish are both greyed out, and clicking Start gives no answer at all.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Assignment",
+      "Start",
+      "Finish",
+      "Started at {time}.",
+      "No such assignment"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "on Work, Start for AS999 reads 'No such assignment'",
+    "criterion": 11,
+    "what_should_happen": "Grace types AS999 into the Assignment box and presses Start. A line reads \"No such assignment\" and \"There is no assignment with that code. Assigning a room gives it one, like AS001.\"",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Assignment",
+      "Start",
+      "No such assignment",
+      "There is no assignment with that code. Assigning a room gives it one, like AS001."
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "once 214's clean has finished, its drawer on the board shows 'Last clean' with the minutes, e.g. '23 min'",
+    "criterion": 12,
+    "what_should_happen": "Room 214's clean is started and finished on Work 23 minutes apart. On the board, door 214's drawer also shows \"Last clean\" with \"23 min\".",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/state/AppContext.jsx"
+    ],
+    "exact_words": [
+      "Start",
+      "Finish",
+      "Started at {time}.",
+      "Finished: {n} min clean, stamped once.",
+      "The board",
+      "Room {no}, {type}, {state}",
+      "To inspect",
+      "Last clean",
+      "{n} min"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "by keyboard: Tab reaches Start, Finish and 'Tick it myself' in order on Sunita's card, and Enter or Space presses them",
+    "criterion": 13,
+    "what_should_happen": "Using only the keyboard on Sunita's card, Tab reaches Start and Enter presses it. The next Tab reaches Finish and Space presses it, and the next reaches \"Tick it myself\", which Enter presses too.",
+    "look_at": [
+      "src/pages/housekeeper/MyRooms.jsx"
+    ],
+    "exact_words": [
+      "Start",
+      "Finish",
+      "Tick it myself",
+      "Started at {time}.",
+      "Finished: {n} min.",
+      "Somebody else must inspect it"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "test": "by keyboard: on Work, Tab skips the greyed-out Start and Finish",
+    "criterion": 13,
+    "what_should_happen": "On Work with nothing assigned, Grace tabs to the empty Assignment box. The next Tab skips the greyed-out Start and Finish and goes on past them.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Assignment",
+      "Start",
+      "Finish"
+    ]
+  },
+  {
+    "ticket": "F-08",
+    "criterion": 14,
+    "checked_by": "browser",
+    "reason": "At phone width the door sitting above the text and the buttons wrapping are layout, which a pretend browser does not draw."
   }
 ]

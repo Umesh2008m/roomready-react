@@ -6,6 +6,9 @@ import { PROPERTY, STATES, TYPES } from './hotel.js';
 /** Where a room is, as a person says it, for a step that came too early or too late. */
 const IS = {
   occupied: 'This room still has its guest',
+  assigned: 'This room is assigned, but its clean has not started',
+  cleaning: 'This room is already being cleaned',
+  toinspect: 'This room is waiting for inspection',
   ready: 'This room is already ready',
   out_of_order: 'This room is out of order',
 };
@@ -13,6 +16,9 @@ const IS = {
 /** What has to happen first, for each step the room needs. */
 const FIRST = {
   checkout: 'check the guest out first',
+  start: 'start the clean first',
+  finish: 'finish the clean first',
+  inspect: 'inspect it first',
   checkin: 'nothing more is needed until the next guest checks in',
 };
 
@@ -70,8 +76,10 @@ export function explain(answer) {
       return { title: 'Somebody is already on that room', text: body.assignedTo
         ? `This room is already ${body.assignedTo}’s; it goes to one housekeeper at a time.`
         : 'This room already has a housekeeper on it.' };
+    case '/errors/self-inspection': return { title: 'Somebody else must inspect it', text: 'The inspector cleaned this room; somebody else must inspect it.' };
     case '/errors/no-such-room': return { title: 'No such room', text: 'There is no room with that number. Rooms run 101–115 up to 401–415.' };
     case '/errors/no-such-housekeeper': return { title: 'No such housekeeper', text: 'There is no housekeeper with that code. Codes run HK01 to HK09.' };
+    case '/errors/no-such-assignment': return { title: 'No such assignment', text: 'There is no assignment with that code. Assigning a room gives it one, like AS001.' };
     case '/errors/no-such-property': return { title: 'That hotel is not here', text: `This board is ${PROPERTY.name} only.` };
     case '/errors/internal': return { title: 'Something went wrong', text: 'Please try again.' };
     default:

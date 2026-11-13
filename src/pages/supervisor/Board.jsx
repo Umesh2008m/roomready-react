@@ -73,6 +73,7 @@ function BoardCheckout() {
  * ✕, Esc or a click outside closes it, and the focus goes back to the door that opened it.
  */
 function RoomDrawer({ no, onClose }) {
+  const { told } = useApp();
   const answer = useGet(`/properties/${PROPERTY.slug}/rooms/${no}`);
   const closeRef = useRef(null);
 
@@ -87,6 +88,9 @@ function RoomDrawer({ no, onClose }) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   });
+
+  // the last clean of this room, as the Finish answer stamped it: stored once, never recomputed
+  const clean = told.cleans.filter((c) => c.room === no).at(-1) ?? null;
 
   const room = answer.status === 200 ? answer.body : null;
   const name = room && STATES.find((s) => s.id === room.state)?.name;
@@ -108,6 +112,7 @@ function RoomDrawer({ no, onClose }) {
               <div><dt>State</dt><dd className={`state-word is-${room.state}`}>{name}</dd></div>
               {room.assignedTo && <div><dt>On it</dt><dd>{room.assignedTo}</dd></div>}
               {room.sinceMinutes != null && <div><dt>For</dt><dd className="mono">{room.sinceMinutes} min</dd></div>}
+              {clean && <div><dt>Last clean</dt><dd className="mono">{clean.minutes} min</dd></div>}
             </dl>
             {room.state === 'dirty' && <p className="drawer-empty">Dirty. <Link to={`/supervisor/work?room=${room.no}`}>Assign it on Work</Link>.</p>}
           </>
@@ -238,7 +243,7 @@ export default function Board() {
       </div>
 
       <ul className="legend legend-below legend-wrap" aria-label="Legend">
-        {STATES.filter((s) => s.id !== 'out_of_order').map((s) => <li key={s.id}><span className="dot is-${s.id}" /> {s.name}</li>)}
+        {STATES.filter((s) => s.id !== 'out_of_order').map((s) => <li key={s.id}><span className={`dot is-${s.id}`} /> {s.name}</li>)}
       </ul>
 
       {selected && <RoomDrawer no={selected} onClose={() => setSelected(null)} />}
