@@ -717,5 +717,315 @@
     "criterion": 13,
     "checked_by": "browser",
     "reason": "The cards sitting three, then two per row on narrower screens is layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-04",
+    "test": "clicking 'Floor 2' shows only the floor 2 corridor, presses it, and puts ?floor=2 in the address",
+    "criterion": 0,
+    "what_should_happen": "On the board, Grace clicks \"Floor 2\" in the filter bar. Only the floor 2 corridor stays, with its fifteen doors 201 to 215, and \"Floor 2\" shows as pressed instead of \"All floors\". The address bar now ends in ?floor=2.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Floor {n}",
+      "All floors"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "on floor 2, 'Suite' and 'Dirty' leave only floor 2's dirty suites, with floor, type and state in the address",
+    "criterion": 1,
+    "what_should_happen": "Several rooms are dirty, among them the suites 211 and 212 on floor 2. With Floor 2 chosen Grace clicks \"Suite\" and picks \"Dirty\" in the State drop-down, and only doors 211 and 212 are left. The address carries floor=2, type=Suite and state=dirty.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/components/Dropdown.jsx"
+    ],
+    "exact_words": [
+      "Floor {n}",
+      "Suite",
+      "State",
+      "Dirty"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "with a filter on, a line beside the filters reads e.g. '15 shown · 0 ready · 2 dirty'",
+    "criterion": 2,
+    "what_should_happen": "Three rooms on floor 1 are dirty, one of them a suite. With Floor 1 chosen the line beside the filters reads \"15 shown · 0 ready · 3 dirty\", and after also choosing Suite it reads \"2 shown · 0 ready · 1 dirty\".",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "{n} shown · {n} ready · {n} dirty",
+      "Floor {n}",
+      "Suite"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "with no filter on, the shown line is not there",
+    "criterion": 3,
+    "what_should_happen": "With Floor 2 pressed, a line above the board says how many rooms are shown. Pressing \"All floors\" takes the filter off, and that line goes away.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "{n} shown · {n} ready · {n} dirty",
+      "All floors"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "'All floors', 'Any type' and 'Any state' each take their filter out of the address and widen the board again",
+    "criterion": 4,
+    "what_should_happen": "The board opens on floor 2, Suite and Dirty. Clicking \"All floors\" brings back floor 1's dirty suite, \"Any type\" brings back every dirty room, and \"Any state\" brings back all sixty doors. Each choice takes its own filter out of the address, until the address is plain /supervisor/board again.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "All floors",
+      "Any type",
+      "Any state",
+      "Room {no}, {type}, {state}"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "with a filter on, the count cards still count the whole hotel",
+    "criterion": 5,
+    "what_should_happen": "Six rooms on two floors are dirty and the board is narrowed to floor 2. The corridor shows only fifteen doors, but the cards still read Rooms 60 and Dirty 6 for the whole hotel.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Rooms",
+      "Dirty"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "opening /supervisor/board?floor=3&state=dirty shows the board already narrowed, Floor 3 pressed and Dirty chosen",
+    "criterion": 6,
+    "what_should_happen": "Room 315 is dirty and somebody opens the board straight at the address with floor=3 and state=dirty. The board opens already narrowed to that one door, with \"Floor 3\" pressed and \"Dirty\" showing in the State drop-down.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/components/Dropdown.jsx"
+    ],
+    "exact_words": [
+      "Floor {n}",
+      "Dirty",
+      "State"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "filters that match no room show 'No room matches these filters' in place of the corridors",
+    "criterion": 7,
+    "what_should_happen": "At the start of the day no suite on floor 1 is ready, so those filters match nothing. In place of the corridors the board says \"No room matches these filters\" and \"Change the floor, the type or the state to see more of the hotel.\"",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "No room matches these filters",
+      "Change the floor, the type or the state to see more of the hotel."
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "/supervisor/board?floor=9 says 'Something in the filters is not right', and 'Show the whole hotel' clears the filters",
+    "criterion": 8,
+    "what_should_happen": "The hotel has no floor 9, so in place of the corridors the board says \"Something in the filters is not right\" and \"Pick a floor: 1, 2, 3 or 4.\" Clicking \"Show the whole hotel\" opens the board with no filters, showing all sixty doors.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/components/Problem.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Something in the filters is not right",
+      "Pick a floor: 1, 2, 3 or 4.",
+      "Show the whole hotel"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "the State drop-down opens a list of 'Any state' and the six states, with the current choice ticked",
+    "criterion": 9,
+    "what_should_happen": "One room is being cleaned and the board is narrowed to Cleaning. Clicking the State drop-down opens a list of \"Any state\" and the six states in order, Occupied to Ready, and only Cleaning, the current choice, is marked as chosen.",
+    "look_at": [
+      "src/components/Dropdown.jsx",
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "State",
+      "Any state",
+      "Occupied",
+      "Dirty",
+      "Assigned",
+      "Cleaning",
+      "To inspect",
+      "Ready"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "a click outside the State list, or Esc, closes it without changing the choice",
+    "criterion": 9,
+    "what_should_happen": "Grace opens the State list and clicks on the page outside it, and it closes. She opens it again and presses Esc, and it closes again. The drop-down still reads \"Any state\" and the board is not filtered.",
+    "look_at": [
+      "src/components/Dropdown.jsx",
+      "src/components/useDismiss.js"
+    ],
+    "exact_words": [
+      "State",
+      "Any state"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "criterion": 9,
+    "checked_by": "browser",
+    "reason": "The list opening right under the drop-down is layout, and the tick beside the current choice is a drawing that screen readers skip; which choice is marked is tested."
+  },
+  {
+    "ticket": "F-04",
+    "test": "the Housekeepers strip has nine chips with code, name and 'free' or the room she holds, e.g. 'HK03 Sunita 214'",
+    "criterion": 10,
+    "what_should_happen": "Room 214 has been given to Sunita. The Housekeepers strip shows nine chips, one per housekeeper with her code and name. Sunita's reads \"HK03 Sunita 214\", and the other eight say \"free\".",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Housekeepers",
+      "free"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "clicking door 214 opens its drawer with 'Floor 2 · Deluxe', the number 214, its door and its State",
+    "criterion": 11,
+    "what_should_happen": "Grace clicks door 214 on the board. A drawer opens that reads \"Floor 2 · Deluxe\" above the number 214, shows the room's door, and gives its State as Occupied.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/components/RoomCell.jsx"
+    ],
+    "exact_words": [
+      "Floor {n} · {type}",
+      "State",
+      "Occupied",
+      "Room {no}, {type}, {state}",
+      "Dlx"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "criterion": 11,
+    "checked_by": "browser",
+    "reason": "The drawer sitting on the right and the door on the board being outlined while it is open are layout and drawing."
+  },
+  {
+    "ticket": "F-04",
+    "test": "with somebody on 214 its drawer also shows 'On it' with her name and 'For' with the minutes, e.g. '12 min'",
+    "criterion": 12,
+    "what_should_happen": "Sunita started cleaning room 214 twelve minutes ago. Its drawer also shows \"On it\" with Sunita and \"For\" with \"12 min\".",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "On it",
+      "For",
+      "{n} min",
+      "Room {no}, {type}, {state}",
+      "Cleaning"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "✕ ('Close') shuts the drawer and the board is as she left it, filters included",
+    "criterion": 13,
+    "what_should_happen": "The board is narrowed to floor 2 and Grace opens door 214's drawer. Clicking its ✕, named \"Close\", shuts the drawer, and the board is still on floor 2 with the same address.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Close",
+      "Floor {n}",
+      "Room {no}, {type}, {state}"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "Esc shuts the drawer and the board is as she left it, filters included",
+    "criterion": 13,
+    "what_should_happen": "The board is narrowed to floor 2 and Grace opens door 214's drawer. Pressing Esc shuts it, and the board is still on floor 2 with the same address.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Floor {n} · {type}",
+      "Room {no}, {type}, {state}"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "criterion": 13,
+    "checked_by": "browser",
+    "reason": "A click outside lands on the shade that covers the page beside the drawer, and only a real layout says where that shade is."
+  },
+  {
+    "ticket": "F-04",
+    "test": "by keyboard: Enter presses a floor and Space presses a type",
+    "criterion": 14,
+    "what_should_happen": "Using only the keyboard, Grace tabs to \"Floor 2\" and presses Enter, and it is pressed. She tabs on to \"Suite\" and presses Space, and that is pressed too, with both filters in the address.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Floor {n}",
+      "Suite"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "by keyboard: ↓ opens the State drop-down, ↓ and ↑ move, Enter picks",
+    "criterion": 14,
+    "what_should_happen": "With the focus on the State drop-down, ↓ opens its list. Three presses of ↓ and one of ↑ move from Any state to Dirty, and Enter picks it, closes the list and narrows the board to dirty rooms.",
+    "look_at": [
+      "src/components/Dropdown.jsx"
+    ],
+    "exact_words": [
+      "State",
+      "Dirty"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "by keyboard: Enter and Space open the State drop-down and Esc closes it",
+    "criterion": 14,
+    "what_should_happen": "With the focus on the State drop-down, Enter opens its list and Esc closes it. Space opens it as well, and Esc closes it again, leaving the board unfiltered.",
+    "look_at": [
+      "src/components/Dropdown.jsx"
+    ],
+    "exact_words": [
+      "State"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "test": "by keyboard: Enter on a door opens its drawer with the focus on ✕, and Esc closes it and puts the focus back on the door",
+    "criterion": 14,
+    "what_should_happen": "On floor 2 Grace tabs to door 214 and presses Enter. Its drawer opens with the focus on the ✕ (Close) button, and Esc closes the drawer and puts the focus back on door 214.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Close",
+      "Room {no}, {type}, {state}"
+    ]
+  },
+  {
+    "ticket": "F-04",
+    "criterion": 15,
+    "checked_by": "browser",
+    "reason": "The filter groups and housekeeper chips wrapping and the drawer filling a phone's width are layout, which a pretend browser does not draw."
   }
 ]

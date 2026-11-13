@@ -1,15 +1,106 @@
+import { useEffect, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import Dropdown from '../../components/Dropdown.jsx';
+import Icon from '../../components/Icon.jsx';
+import Problem from '../../components/Problem.jsx';
 import RoomCell from '../../components/RoomCell.jsx';
 import SectionTabs from '../../components/SectionTabs.jsx';
-import { FLOORS, PROPERTY, STATES } from '../../data/hotel.js';
+import { FLOORS, PROPERTY, STATES, TYPES } from '../../data/hotel.js';
 import { useGet } from '../../state/AppContext.jsx';
 
+function Segmented({ label, options, value, onChange }) {
+  return (
+    <div className="segmented" role="group" aria-label={label}>
+      {options.map(([id, text]) => (
+        <button key={id || 'all'} type="button" aria-pressed={value === id}
+          className={`seg${value === id ? ' is-on' : ''}`} onClick={() => onChange(id)}>
+          {text}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /**
- * Grace's board: GET /properties/harbour-view/rooms, read once for the count cards and the corridors both.
+ * One room, read on its own from GET /properties/harbour-view/rooms/{no}. It takes the focus on its ✕ when it opens;
+ * ✕, Esc or a click outside closes it, and the focus goes back to the door that opened it.
+ */
+function RoomDrawer({ no, onClose }) {
+  const answer = useGet(`/properties/${PROPERTY.slug}/rooms/${no}`);
+  const closeRef = useRef(null);
+
+  useEffect(() => {
+    const before = document.activeElement;
+    closeRef.current?.focus({ preventScroll: true });
+    return () => before?.focus?.({ preventScroll: true });
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
+  const room = answer.status === 200 ? answer.body : null;
+  const name = room && STATES.find((s) => s.id === room.state)?.name;
+  return (
+    <div className="drawer-scrim" onClick={onClose}>
+      <aside className="drawer" role="dialog" aria-modal="true" aria-label={`Room ${no}`} onClick={(e) => e.stopPropagation()}>
+        <header className="drawer-head">
+          <div>
+            <p className="eyebrow">{room ? `Floor ${room.floor} · ${room.type}` : 'Room'}</p>
+            <h2 className="drawer-title">{no}</h2>
+          </div>
+          <button ref={closeRef} type="button" className="icon-btn" onClick={onClose} aria-label="Close"><Icon name="x" /></button>
+        </header>
+        {!room && <Problem answer={answer} />}
+        {room && (
+          <>
+            <div className="drawer-room"><RoomCell room={room} /></div>
+            <dl className="facts">
+              <div><dt>State</dt><dd className={`state-word is-${room.state}`}>{name}</dd></div>
+              {room.assignedTo && <div><dt>On it</dt><dd>{room.assignedTo}</dd></div>}
+              {room.sinceMinutes != null && <div><dt>For</dt><dd className="mono">{room.sinceMinutes} min</dd></div>}
+            </dl>
+          </>
+        )}
+      </aside>
+    </div>
+  );
+}
+
+/**
+ * Grace's board: GET /properties/harbour-view/rooms with the filters as query parameters, and the housekeepers
+ * (GET …/housekeepers) beside it. The filters live in the address bar, so a board can be linked to, and a value the
+ * backend refuses shows its refusal.
  */
 export default function Board() {
-  const everything = useGet(`/properties/${PROPERTY.slug}/rooms`);
+  const [params, setParams] = useSearchParams();
+  const [selected, setSelected] = useState(null);
+
+  const floor = params.get('floor') ?? '';
+  const state = params.get('state') ?? '';
+  const type = params.get('type') ?? '';
+  const query = new URLSearchParams();
+  if (floor) query.set('floor', floor);
+  if (state) query.set('state', state);
+  if (type) query.set('type', type);
+  const base = `/properties/${PROPERTY.slug}/rooms`;
+  const path = `${base}${query.toString() ? `?${query}` : ''}`;
+  const answer = useGet(path);
+  const everything = useGet(base);
+  const staffAnswer = useGet(`/properties/${PROPERTY.slug}/housekeepers`);
   const all = everything.status === 200 ? everything.body.rooms : [];
+  const shown = answer.status === 200 ? answer.body.rooms : [];
   const count = (s) => all.filter((r) => r.state === s).length;
+  const staff = staffAnswer.status === 200 ? staffAnswer.body.housekeepers : null;
+
+  function setFilter(name, value) {
+    const next = new URLSearchParams(params);
+    if (value) next.set(name, value);
+    else next.delete(name);
+    setParams(next);
+  }
 
   return (
     <div className="page is-fit">
@@ -32,11 +123,52 @@ export default function Board() {
         </div>
       )}
 
+      <div className="toolbar">
+        <Segmented label="Floor" value={floor} onChange={(v) => setFilter('floor', v)}
+          options={[['', 'All floors'], ...FLOORS.map((f) => [String(f), `Floor ${f}`])]} />
+        <Segmented label="Type" value={type} onChange={(v) => setFilter('type', v)}
+          options={[['', 'Any type'], ...TYPES.map((t) => [t, t])]} />
+        <div className="toolbar-select">
+          <Dropdown label="State" value={state} onChange={(v) => setFilter('state', v)}
+            options={[{ value: '', label: 'Any state' }, ...STATES.filter((s) => s.id !== 'out_of_order').map((s) => ({ value: s.id, label: s.name }))]} />
+        </div>
+        {(floor || state || type) && answer.status === 200 && (
+          <p className="filter-count" aria-live="polite">
+            <strong>{shown.length}</strong> shown · <strong className="is-free">{answer.body.ready}</strong> ready · <strong>{answer.body.dirty}</strong> dirty
+          </p>
+        )}
+      </div>
+
+      <div className="staff-strip" aria-label="Housekeepers">
+        <span className="staff-strip-label">Housekeepers</span>
+        {!staff ? <Problem answer={staffAnswer} compact /> : staff.map((h) => {
+          const room = h.openAssignment;
+          return (
+            <span key={h.id} className="staff-chip">
+              <span className="staff-code mono">{h.id}</span>
+              <span>{h.name}</span>
+              <span className={`staff-room mono${room ? ' is-on' : ''}`}>{room ?? 'free'}</span>
+            </span>
+          );
+        })}
+      </div>
+
       <div>
-        {everything.status === 200 && (
+        {answer.status === 0 ? null : answer.status !== 200 ? (
+          <Problem answer={answer}>
+            <Link to="/supervisor/board" className="btn btn-soft problem-action">Show the whole hotel</Link>
+          </Problem>
+        ) : shown.length === 0 ? (
+          <div className="empty">
+            <Icon name="grid" size={28} />
+            <p className="empty-title">No room matches these filters</p>
+            <p className="empty-text">Change the floor, the type or the state to see more of the hotel.</p>
+          </div>
+        ) : (
           <div className="hotel">
             {FLOORS.map((f) => {
-              const rooms = all.filter((r) => r.floor === f);
+              const rooms = shown.filter((r) => r.floor === f);
+              if (rooms.length === 0) return null;
               return (
                 <section key={f} className="corridor" aria-label={`Floor ${f}`}>
                   <header className="corridor-head">
@@ -45,7 +177,7 @@ export default function Board() {
                   </header>
                   <div className="corridor-row">
                     {rooms.map((r, i) => (
-                      <RoomCell key={r.no} room={r} button style={{ '--i': i }} />
+                      <RoomCell key={r.no} room={r} selected={r.no === selected} onClick={() => setSelected(r.no)} style={{ '--i': i }} />
                     ))}
                   </div>
                 </section>
@@ -58,6 +190,8 @@ export default function Board() {
       <ul className="legend legend-below legend-wrap" aria-label="Legend">
         {STATES.filter((s) => s.id !== 'out_of_order').map((s) => <li key={s.id}><span className={`dot is-${s.id}`} /> {s.name}</li>)}
       </ul>
+
+      {selected && <RoomDrawer no={selected} onClose={() => setSelected(null)} />}
     </div>
   );
 }

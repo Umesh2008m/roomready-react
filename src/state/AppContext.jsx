@@ -26,16 +26,16 @@ function useApp() {
 const NOTHING = { status: 0, body: null };
 
 /**
- * A GET whose answer a screen shows: { status: 0 } until the first answer arrives. A refetch keeps the last answer on
- * screen until the new one is in.
+ * A GET whose answer a screen shows: { status: 0 } until the first answer for this path arrives. A refetch keeps the
+ * last answer on screen until the new one is in.
  */
 export function useGet(path) {
   const { version } = useApp();
-  const [answer, setAnswer] = useState(NOTHING);
+  const [got, setGot] = useState({ path: null, answer: NOTHING });
   useEffect(() => {
     let current = true;
-    api.get(path).then((got) => { if (current) setAnswer(got); });
+    api.get(path).then((answer) => { if (current) setGot({ path, answer }); });
     return () => { current = false; };
   }, [path, version]);
-  return answer;
+  return got.path === path ? got.answer : NOTHING;
 }

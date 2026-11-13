@@ -1,7 +1,8 @@
-// Harbour View as the screens draw it: its name and address in the API (the slug), its floors, and the words for
-// each room state. The rooms themselves come from the backend.
+// Harbour View as the screens draw it: its name and address in the API (the slug), its room types and floors, and
+// the words for each room state. The rooms and the housekeepers themselves come from the backend.
 export const PROPERTY = { slug: 'harbour-view', name: 'Harbour View' };
 
+export const TYPES = ['Standard', 'Deluxe', 'Suite'];
 export const FLOORS = [1, 2, 3, 4];
 
 /** The room states, in the order a room goes through them. */
