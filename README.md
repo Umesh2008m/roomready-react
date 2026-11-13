@@ -11,7 +11,7 @@
 - [x] Ticket 3 · The board
 - [x] Ticket 4 · Finding one room
 - [x] Ticket 5 · The front desk checks a guest out
-- [ ] Ticket 6 · Taking back the key
+- [x] Ticket 6 · Taking back the key
 - [ ] Ticket 7 · Assigning the work
 - [ ] Ticket 8 · The housekeeper's rooms
 - [ ] Ticket 9 · Inspecting

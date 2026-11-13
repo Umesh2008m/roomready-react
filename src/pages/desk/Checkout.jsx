@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import Icon from '../../components/Icon.jsx';
 import Problem from '../../components/Problem.jsx';
+import RoomCell from '../../components/RoomCell.jsx';
 import { istInputToApi, openPicker, toIstInput } from '../../data/format.js';
 import { PROPERTY } from '../../data/hotel.js';
 import { fieldWords } from '../../data/messages.js';
-import { useApp } from '../../state/AppContext.jsx';
+import { useApp, useGet } from '../../state/AppContext.jsx';
+import ReturnKey from './ReturnKey.jsx';
 
-/** The answer to "check out": what to do before it, nothing more once the guest is out, or why not. */
-function CheckoutResult({ answer }) {
+/** The answer to "check out": take back the key and see the room turn dirty, or why not. */
+function CheckoutResult({ answer, nextGuest, onNext }) {
+  const done = answer?.status === 201 ? answer.body : null;
+  const room = useGet(done ? `/properties/${PROPERTY.slug}/rooms/${done.room}` : null);
   if (!answer) {
     return (
       <div className="result result-idle">
@@ -17,13 +21,17 @@ function CheckoutResult({ answer }) {
       </div>
     );
   }
-  if (answer.status === 201) return null;
+  if (done) {
+    return <ReturnKey key={done.stayId} checkout={done} room={room.status === 200 ? room.body : null}
+      nextGuest={nextGuest} onDone={onNext} />;
+  }
   return <div className="result result-no"><Problem answer={answer} /></div>;
 }
 
 /**
  * Pradeep at the desk: POST /checkouts closes the stay and makes the room dirty; "Next guest due" is the arrival
- * the room's readiness will be measured against.
+ * the room's readiness will be measured against. The rooms checked out this morning are read from the board
+ * (GET …/rooms).
  */
 export default function Checkout() {
   const { post } = useApp();
@@ -31,6 +39,9 @@ export default function Checkout() {
   const [at, setAt] = useState(() => toIstInput(Date.now()));
   const [arrival, setArrival] = useState('');
   const [answer, setAnswer] = useState(null);
+  const [nextGuest, setNextGuest] = useState(null);
+  const board = useGet(`/properties/${PROPERTY.slug}/rooms`);
+  const out = (board.status === 200 ? board.body.rooms : []).filter((r) => r.state !== 'occupied');
   const fieldErrors = fieldWords(answer);                     // each bad box's own sentence, shown under it
 
   async function checkout(e) {
@@ -38,8 +49,18 @@ export default function Checkout() {
     const body = { room: room.trim() };
     if (at) body.at = istInputToApi(at);                       // a blank time is left out, as a form would
     if (arrival) body.arrivalAt = istInputToApi(arrival);
+    setNextGuest(body.arrivalAt ?? null);
     setAnswer(await post('/checkouts', body));
   }
+
+  function next() {
+    setAnswer(null);
+    setRoom('');
+    setAt(toIstInput(Date.now()));
+    setArrival('');
+  }
+
+  const returning = answer?.status === 201;   // the guest is out: take the key back first
 
   return (
     <div className="page is-fit">
@@ -51,8 +72,8 @@ export default function Checkout() {
       </div>
 
       <div className="split">
-        <form className="card form" onSubmit={checkout} noValidate>
-          <fieldset className="form-fields">
+        <form className={`card form${returning ? ' is-locked' : ''}`} onSubmit={checkout} noValidate>
+          <fieldset className="form-fields" disabled={returning}>
             <div className="field">
               <label className="field-label" htmlFor="co-room"><span className="step-no">1</span> Room</label>
               <div className={`input-wrap${fieldErrors.room ? ' has-error' : ''}`}>
@@ -80,8 +101,23 @@ export default function Checkout() {
             <button type="submit" className="btn btn-primary btn-lg btn-block">Check out <Icon name="door" size={18} /></button>
           </fieldset>
         </form>
-        <div className="result-slot"><CheckoutResult answer={answer} /></div>
+        <div className="result-slot"><CheckoutResult answer={answer} nextGuest={nextGuest} onNext={next} /></div>
       </div>
+
+      <section className="list-section" aria-labelledby="out-title">
+        <h2 id="out-title" className="section-title">Checked out this morning <span className="section-count">{out.length}</span></h2>
+        {board.status === 0 ? null : out.length === 0 ? (
+          <div className="empty">
+            <Icon name="door" size={28} />
+            <p className="empty-title">Every guest is still in</p>
+            <p className="empty-text">Check a room out above; it appears here and on Grace’s board.</p>
+          </div>
+        ) : (
+          <div className="out-strip" aria-label="Rooms checked out, as their doors">
+            {out.map((r, i) => <RoomCell key={r.no} room={r} style={{ '--i': i }} />)}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

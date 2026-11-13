@@ -1351,5 +1351,222 @@
     "criterion": 17,
     "checked_by": "browser",
     "reason": "Below 900px the band's boxes and button stacking one per row is layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-06",
+    "test": "after checking 214 out, step 1 is current, door 214 still shows Occupied and the Harbour View key card waits beside it",
+    "criterion": 0,
+    "what_should_happen": "Pradeep has just checked out 214, and a step panel takes the place of the waiting panel. Step 1 \"Take back the key card\" still shows its number and step 2 \"Room marked dirty\" waits, door 214 still reads Occupied, and a Harbour View key card with 214 on it waits beside it. The caption reads \"Drag the key card onto room 214\" and \"Or tap the card. The guest has checked out.\"",
+    "look_at": [
+      "src/pages/desk/ReturnKey.jsx",
+      "src/pages/desk/Checkout.jsx"
+    ],
+    "exact_words": [
+      "Take back the key card",
+      "Room marked dirty",
+      "Harbour View",
+      "Drag the key card onto room {no}",
+      "Or tap the card. The guest has checked out.",
+      "Key card for room {no}. Take it back",
+      "Check a guest out",
+      "Room",
+      "Next guest due",
+      "Check out"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "criterion": 0,
+    "checked_by": "browser",
+    "reason": "Which step is current is shown by its colour and outline, and the card waiting beside the door is layout."
+  },
+  {
+    "ticket": "F-06",
+    "test": "while the step panel shows, the three boxes and the 'Check out' button are locked",
+    "criterion": 1,
+    "what_should_happen": "While the key card waits, the Room, Checked out at and Next guest due boxes and the \"Check out\" button are all locked. Typing in the Room box changes nothing, and it still holds 214.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx"
+    ],
+    "exact_words": [
+      "Room",
+      "Checked out at",
+      "Next guest due",
+      "Check out"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "criterion": 2,
+    "checked_by": "browser",
+    "reason": "Dragging the card and the door lighting up while the card is over it need a real pointer drag; what happens on letting go is the same as a tap, tested under the next criterion."
+  },
+  {
+    "ticket": "F-06",
+    "test": "tapping the key card takes it away, ticks step 1 and reads 'Marking the room dirty…'",
+    "criterion": 3,
+    "what_should_happen": "Pradeep taps the key card instead of dragging it. The card disappears, step 1 no longer shows its number because it is ticked, and the caption reads \"Marking the room dirty…\".",
+    "look_at": [
+      "src/pages/desk/ReturnKey.jsx"
+    ],
+    "exact_words": [
+      "Key card for room {no}. Take it back",
+      "Marking the room dirty…",
+      "Take back the key card",
+      "Or tap the card. The guest has checked out."
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "test": "within a second of the key coming back, door 214 turns Dirty, step 2 is ticked and the caption reads 'Room 214 is dirty'",
+    "criterion": 4,
+    "what_should_happen": "A second after the key card comes back, the door in the panel reads Dirty instead of Occupied. Step 2 \"Room marked dirty\" is ticked, and the caption reads \"Room 214 is dirty\" and \"Grace sees it on her board now.\"",
+    "look_at": [
+      "src/pages/desk/ReturnKey.jsx"
+    ],
+    "exact_words": [
+      "Key card for room {no}. Take it back",
+      "Room {no} is dirty",
+      "Grace sees it on her board now.",
+      "Room marked dirty",
+      "Marking the room dirty…"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "criterion": 4,
+    "checked_by": "browser",
+    "reason": "The door's strip changing colour and the ticks themselves are drawings and colours; the words that change are tested."
+  },
+  {
+    "ticket": "F-06",
+    "test": "once dirty the panel shows the Stay and 'Left at'; with no next guest given there is no 'Next guest' line",
+    "criterion": 5,
+    "what_should_happen": "Pradeep checked 214 out at 10:40 without a next guest. Once the room is dirty the panel shows Stay ST0029 and \"Left at\" 10:40, and there is no Next guest line at all.",
+    "look_at": [
+      "src/pages/desk/ReturnKey.jsx"
+    ],
+    "exact_words": [
+      "Key card for room {no}. Take it back",
+      "Stay",
+      "Left at",
+      "Next guest"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "test": "with a next guest given, the dirty room's panel also shows 'Next guest' with that time",
+    "criterion": 5,
+    "what_should_happen": "This time Pradeep gave 14:00 as the next guest's time when checking 214 out. Once the room is dirty the panel shows Stay ST0029, \"Left at\" 10:40, and also \"Next guest\" 14:00.",
+    "look_at": [
+      "src/pages/desk/ReturnKey.jsx",
+      "src/pages/desk/Checkout.jsx"
+    ],
+    "exact_words": [
+      "Key card for room {no}. Take it back",
+      "Stay",
+      "Left at",
+      "Next guest"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "test": "'OK, next guest' brings back 'Check a guest out' and an unlocked, empty form with the new now",
+    "criterion": 6,
+    "what_should_happen": "With room 214 dirty and five minutes gone by, Pradeep presses \"OK, next guest\". The panel reads \"Check a guest out\" again and the form is unlocked, with Room and Next guest due empty and Checked out at filled with the new time now.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/pages/desk/ReturnKey.jsx"
+    ],
+    "exact_words": [
+      "OK, next guest",
+      "Check a guest out",
+      "Room {no} is dirty",
+      "Room",
+      "Checked out at",
+      "Next guest due",
+      "Check out"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "test": "with every guest still in, 'Checked out this morning' counts 0 and says 'Every guest is still in'",
+    "criterion": 7,
+    "what_should_happen": "On a fresh hotel nobody has checked out yet. Under the form, \"Checked out this morning\" counts 0 and says \"Every guest is still in\", with a note that a room checked out above appears here and on Grace’s board.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx"
+    ],
+    "exact_words": [
+      "Checked out this morning",
+      "Every guest is still in",
+      "Check a room out above; it appears here and on Grace’s board."
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "test": "'Checked out this morning' counts the checked-out rooms and shows their doors in number order with their state now",
+    "criterion": 8,
+    "what_should_happen": "Rooms 401 and 115 have been checked out, and 115 has already been given to a housekeeper. \"Checked out this morning\" counts 2 and shows door 115 reading Assigned before door 401 reading Dirty.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/components/RoomCell.jsx"
+    ],
+    "exact_words": [
+      "Checked out this morning",
+      "Every guest is still in",
+      "Assigned",
+      "Dirty"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "test": "door 214 joins the row as soon as its checkout goes through, and changes as its clean moves on",
+    "criterion": 8,
+    "what_should_happen": "As soon as Pradeep's checkout of 214 goes through, \"Checked out this morning\" counts 1 and shows door 214 reading Dirty. When housekeeping then gives 214 to Sunita, the same door reads Assigned within twenty seconds.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/state/AppContext.jsx"
+    ],
+    "exact_words": [
+      "Checked out this morning",
+      "Key card for room {no}. Take it back",
+      "Dirty",
+      "Assigned"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "test": "by keyboard: Tab to the key card and Enter takes it back, then Enter on 'OK, next guest' starts the next guest",
+    "criterion": 9,
+    "what_should_happen": "Using only the keyboard, Pradeep tabs to the key card, read out as \"Key card for room 214. Take it back\", and presses Enter, so the caption reads \"Marking the room dirty…\". Once the room is dirty the focus is already on \"OK, next guest\", and Enter brings back an empty form.",
+    "look_at": [
+      "src/pages/desk/ReturnKey.jsx"
+    ],
+    "exact_words": [
+      "Key card for room {no}. Take it back",
+      "Marking the room dirty…",
+      "OK, next guest",
+      "Check a guest out"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "test": "by keyboard: Space on the key card takes it back as a tap does",
+    "criterion": 9,
+    "what_should_happen": "Pradeep tabs to the key card and presses Space. The card is taken back just as with a tap, and a second later the caption reads \"Room 214 is dirty\".",
+    "look_at": [
+      "src/pages/desk/ReturnKey.jsx"
+    ],
+    "exact_words": [
+      "Key card for room {no}. Take it back",
+      "Marking the room dirty…",
+      "Room {no} is dirty"
+    ]
+  },
+  {
+    "ticket": "F-06",
+    "criterion": 10,
+    "checked_by": "browser",
+    "reason": "On a phone the panel moving under the form and the row of doors scrolling sideways are layout, which a pretend browser does not draw; the tap itself is tested."
   }
 ]
