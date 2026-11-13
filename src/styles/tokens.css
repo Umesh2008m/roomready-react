@@ -1,0 +1,59 @@
+/* The design tokens: warm paper, ink type, and one signal orange (a dirty room waiting for a housekeeper).
+   Change the look here only. */
+:root {
+  /* surfaces */
+  --paper: #efede8;
+  --paper-2: #e6e3dc;
+  --surface: #ffffff;
+  --surface-2: #f8f7f4;
+  --ink: #16181b;
+  --ink-2: #474c54;
+  --ink-3: #7a7f88;
+  --line: #e0dcd4;
+  --line-2: #cdc8be;
+
+  /* meaning */
+  --signal: #ff5a1f;       /* a dirty room, and the brand */
+  --signal-ink: #b23a0c;
+  --signal-soft: #fff0e8;
+  --go: #138a48;           /* free, valid, done */
+  --go-bright: #22c55e;
+  --go-soft: #e6f5ec;
+  --danger: #c8261b;
+  --danger-soft: #fdecea;
+  --kraft: #c9a476;        /* cardboard */
+
+  /* type */
+  --font: "Schibsted Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+  --t-12: 12px;
+  --t-14: 14px;
+  --t-16: 16px;
+  --t-20: 20px;
+  --t-28: 28px;
+  --t-44: 44px;
+
+  /* space (8px scale) and shape */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+
+  /* depth: three levels */
+  --sh-1: 0 1px 2px rgba(22, 24, 27, .06), 0 1px 1px rgba(22, 24, 27, .04);
+  --sh-2: 0 10px 24px -10px rgba(22, 24, 27, .18), 0 2px 5px rgba(22, 24, 27, .06);
+  --sh-3: 0 32px 64px -24px rgba(22, 24, 27, .32), 0 12px 24px -12px rgba(22, 24, 27, .14);
+
+  /* motion */
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --fast: 150ms;
+  --med: 260ms;
+}

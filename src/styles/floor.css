@@ -1,0 +1,63 @@
+/* Shared pieces: the welcome screen's four people, form errors, the section under a form, and the drop-down. */
+
+/* welcome: four people to choose from */
+.pick-grid.pick-grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1100px) { .pick-grid.pick-grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .pick-grid.pick-grid-4 { grid-template-columns: 1fr; } }
+
+/* a form field the backend refused, and the list under a form */
+.input.has-error { border-color: var(--danger); }
+.list-section { margin-top: var(--s-7); }
+
+/* the key card held over the door */
+.is-over { color: var(--danger); font-weight: 600; }
+
+/* the app's own drop-down (components/Dropdown.jsx) */
+.dropdown { position: relative; flex: 1; min-width: 0; }
+.dropdown-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 14px 8px 16px;
+  border: 1.5px solid var(--line-2);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: 600 var(--t-14) var(--font);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--fast), box-shadow var(--fast);
+}
+.dropdown-button:hover:not(:disabled) { border-color: var(--ink-3); }
+.dropdown-button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.dropdown.is-open .dropdown-button { border-color: var(--ink); box-shadow: var(--sh-1); }
+.dropdown-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dropdown-chevron { flex: none; color: var(--ink-3); transition: transform var(--fast); }
+.dropdown.is-open .dropdown-chevron { transform: rotate(180deg); }
+.dropdown-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  min-width: 220px;
+  max-height: 280px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--sh-3);
+  animation: rise var(--fast) var(--ease);
+}
+.dropdown-option { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: 8px 10px; border-radius: 8px; color: var(--ink); cursor: pointer; }
+.dropdown-option.is-active { background: var(--paper); }
+.dropdown-option.is-current { font-weight: 700; }
+.dropdown-option-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.dropdown-option-label { font-size: var(--t-14); }
+.dropdown-option-note { font-size: 12px; font-weight: 500; color: var(--ink-3); }

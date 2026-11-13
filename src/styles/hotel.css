@@ -1,0 +1,317 @@
+/* The hotel: each floor a corridor of doors.
+   A door's strip says where the room is in the sequence: occupied → dirty → assigned → cleaning → to inspect → ready. */
+:root {
+  --st-occupied: #5b6472;
+  --st-dirty: var(--signal);
+  --st-assigned: #d99a06;
+  --st-cleaning: #2563eb;
+  --st-toinspect: #7c3aed;
+  --st-ready: var(--go-bright);
+  --st-out_of_order: #9a968d;
+}
+
+.hotel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  padding: 32px 36px var(--s-5);
+  border-radius: var(--r-xl);
+  background:
+    repeating-linear-gradient(90deg, rgba(80, 60, 40, .04) 0 2px, transparent 2px 38px),
+    linear-gradient(170deg, #ece7df 0%, #ddd5c8 100%);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -3px 0 rgba(0, 0, 0, .06), var(--sh-3);
+}
+/* a floor is as wide as its row of doors, so its header ("3 ready · 2 dirty") ends exactly at the last door */
+.corridor { display: flex; flex-direction: column; gap: 10px; width: max-content; max-width: 100%; }
+.corridor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-4);
+  font-size: var(--t-12);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #6b5a44;
+}
+.corridor-head .mono { letter-spacing: 0; text-transform: none; font-weight: 600; }
+.corridor-row { display: flex; gap: 5px; }
+@media (max-width: 1180px) { .corridor-row { flex-wrap: wrap; } }
+@media (max-width: 640px) { .hotel { padding: var(--s-4); } }
+
+.room-cell {
+  --st: var(--st-occupied);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: none;
+  width: 70px;
+  min-height: 84px;
+  padding: 10px 7px 8px;
+  border: 2px solid #2b2a28;
+  border-radius: 8px 8px 4px 4px;
+  background: linear-gradient(180deg, #fffdf8, #f2ede4);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .12), var(--sh-1);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  overflow: hidden;
+  animation: rise var(--med) var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 12ms);
+  transition: transform var(--fast) var(--ease), box-shadow var(--fast);
+}
+.room-cell::before { content: ''; position: absolute; inset: 0 0 auto; height: 5px; background: var(--st); }
+button.room-cell { cursor: pointer; }
+button.room-cell:hover { transform: translateY(-2px); box-shadow: 0 4px 0 rgba(0, 0, 0, .12), var(--sh-2); }
+.room-cell:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.room-cell.is-selected { outline: 3px solid var(--signal); outline-offset: 3px; }
+.rc-plate { font-size: 15px; font-weight: 800; letter-spacing: -.01em; }
+.rc-type { font-size: 11px; font-weight: 600; color: var(--ink-3); }
+.rc-foot { margin-top: auto; display: flex; flex-direction: column; gap: 1px; }
+.rc-state { font-size: 10.5px; font-weight: 700; color: var(--st); filter: brightness(.82); white-space: nowrap; }
+.rc-who { font-size: 10.5px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.room-cell.is-occupied { --st: var(--st-occupied); background: linear-gradient(180deg, #f3f1ec, #e6e2da); }
+.room-cell.is-dirty { --st: var(--st-dirty); }
+.room-cell.is-assigned { --st: var(--st-assigned); }
+.room-cell.is-cleaning { --st: var(--st-cleaning); }
+.room-cell.is-toinspect { --st: var(--st-toinspect); }
+.room-cell.is-ready { --st: var(--st-ready); background: linear-gradient(180deg, #f6fffa, #e7f6ed); }
+.room-cell.is-out_of_order { --st: var(--st-out_of_order); background: repeating-linear-gradient(135deg, #f1efea 0 6px, #e9e6df 6px 12px); }
+
+/* the legend: plain 8px dots */
+.dot.is-occupied { background: var(--st-occupied); }
+.dot.is-dirty { background: var(--st-dirty); }
+.dot.is-assigned { background: var(--st-assigned); }
+.dot.is-cleaning { background: var(--st-cleaning); }
+.dot.is-toinspect { background: var(--st-toinspect); }
+.dot.is-ready { background: var(--st-ready); }
+.legend-wrap { flex-wrap: wrap; row-gap: 6px; }
+
+.state-word { font-weight: 700; }
+.state-word.is-occupied { color: var(--st-occupied); }
+.state-word.is-dirty { color: var(--signal-ink); }
+.state-word.is-assigned { color: #9a6b02; }
+.state-word.is-cleaning { color: var(--st-cleaning); }
+.state-word.is-toinspect { color: var(--st-toinspect); }
+.state-word.is-ready { color: var(--go); }
+
+/* the board: the housekeepers in a strip above the corridors */
+.staff-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: var(--s-4); }
+.staff-strip-label { margin-right: 4px; font-size: var(--t-12); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.staff-chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 12px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--surface); box-shadow: var(--sh-1); font-size: var(--t-14); }
+.staff-code { font-size: 11px; font-weight: 700; color: var(--ink-3); }
+.staff-room { font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: var(--paper); color: var(--ink-3); }
+.staff-room.is-on { background: #e8eefe; color: var(--st-cleaning); }
+
+/* the room drawer */
+.drawer-room { display: grid; place-items: center; padding: var(--s-4); border-radius: var(--r-lg); background: linear-gradient(170deg, #ece7df, #ddd5c8); }
+.drawer-room .room-cell { width: 92px; min-height: 108px; }
+
+/* the work screen: three forms side by side */
+.work-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-4); align-items: start; }
+@media (max-width: 1100px) { .work-grid { grid-template-columns: minmax(0, 1fr); } }
+.work-card { display: flex; flex-direction: column; gap: var(--s-3); }
+.work-card h2 { font-size: var(--t-20); font-weight: 800; letter-spacing: -.01em; }
+.work-step { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 8px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 12px; font-weight: 800; }
+.work-hint { font-size: var(--t-14); color: var(--ink-3); }
+.btn-row { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+.result-pill { display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: var(--r-md); font-size: var(--t-14); }
+.result-pill.is-ok { background: var(--go-soft); color: var(--go); }
+.result-pill.is-no { background: var(--signal-soft); color: var(--signal-ink); }
+.result-pill strong { display: block; }
+.result-pill p { margin: 2px 0 0; color: var(--ink-2); }
+
+/* the general manager's room card */
+.margin-card { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3); }
+.margin-card .stat-value.is-late { color: var(--danger); }
+
+/* the housekeeper's own room */
+.my-room { display: grid; grid-template-columns: 140px 1fr; gap: var(--s-5); align-items: center; }
+.my-room .room-cell { width: 120px; min-height: 140px; }
+.my-room .rc-plate { font-size: 24px; }
+@media (max-width: 640px) { .my-room { grid-template-columns: 1fr; } }
+
+/* welcome: a slice of a corridor */
+.hero-corridor { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: var(--s-5); border-radius: var(--r-xl);
+  background: linear-gradient(170deg, #ece7df 0%, #ddd5c8 100%); box-shadow: inset 0 1px 0 #fff, var(--sh-3); }
+.toolbar-select { display: flex; min-width: 180px; }
+
+/* the Check out form on the board */
+.board-checkout { padding: var(--s-4) var(--s-5); margin-bottom: var(--s-4); display: grid; gap: var(--s-3); }
+.board-checkout-head { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
+.board-checkout-title { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; }
+.board-checkout-fields { display: grid; grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--s-4); align-items: start; }
+.board-checkout-field { display: grid; gap: 6px; font-size: var(--t-14); font-weight: 600; color: var(--ink-2); }
+/* real boxes you can type in: border, white fill, a clear focus ring */
+.board-checkout-input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 var(--s-3);
+  border: 1.5px solid var(--line-2);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+  transition: border-color var(--fast), box-shadow var(--fast);
+}
+.board-checkout-input::placeholder { color: #b9b4aa; font-weight: 500; }
+.board-checkout-input:hover { border-color: var(--ink-3); }
+.board-checkout-input:focus { outline: 0; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(22, 24, 27, .1); }
+.board-checkout-help { font-size: var(--t-12); font-weight: 500; color: var(--ink-3); }
+.board-checkout-fields .btn { height: 46px; margin-top: 26px; }
+.board-checkout .result-pill { margin: 0; }
+@media (max-width: 900px) { .board-checkout-fields { grid-template-columns: 1fr; } .board-checkout-fields .btn { margin-top: 0; } }
+
+/* clean time by type, on Work */
+.clean-times { padding: var(--s-4) var(--s-5); margin-top: var(--s-4); display: grid; gap: var(--s-2); }
+.clean-times-title { font-size: var(--t-18, 18px); font-weight: 800; }
+.clean-times-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+@media (max-width: 640px) { .clean-times-row { grid-template-columns: 1fr; } }
+
+/* a date-time box is clicked, not typed into: the hand cursor, and the click opens its calendar (openPicker) */
+input[type="datetime-local"], input[type="datetime-local"]::-webkit-datetime-edit,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator { cursor: pointer; }
+.input-wrap:has(input[type="datetime-local"]) { cursor: pointer; }
+
+/* After "Check out": take back the guest's key card, and watch the door turn dirty (ReturnKey) */
+.key-stage { align-items: center; overflow: hidden; }
+.key-door {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  border: 2px dashed transparent;
+  transition: transform var(--med) var(--ease), border-color var(--fast), background var(--fast);
+}
+.key-door .room-cell { width: 104px; min-height: 128px; padding: 16px 10px 10px; transform-origin: bottom; transition: background var(--slow, 600ms) var(--ease); }
+.key-door .room-cell::before { height: 8px; transition: background 600ms var(--ease); }
+.key-door .rc-plate { font-size: 22px; }
+.key-door .rc-type { font-size: 13px; }
+.key-door .rc-state { font-size: 13px; }
+.key-door.is-waiting { border-color: rgba(255, 90, 31, .45); animation: key-pulse 1.1s ease-in-out infinite; }
+.key-door.is-over { transform: scale(1.05); border-color: var(--signal); background: var(--signal-soft); animation: none; }
+@keyframes key-pulse { 50% { border-color: rgba(255, 90, 31, .12); } }
+.key-return.is-turning .key-door .room-cell { animation: door-flip 900ms var(--ease); }
+@keyframes door-flip { 40% { transform: scaleX(.92) rotateY(18deg); } }
+.key-in { position: absolute; top: 6px; right: 10px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--go); color: #fff; animation: rise var(--med) var(--ease); }
+
+.key-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 148px;
+  height: 94px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1d5f74, #0f3b4a);
+  color: #fff;
+  text-align: left;
+  box-shadow: 0 8px 18px rgba(15, 59, 74, .3);
+  cursor: grab;
+  transition: transform var(--fast) var(--ease);
+}
+.key-card::after { content: ""; position: absolute; left: 0; right: 0; bottom: 18px; height: 10px; background: rgba(0, 0, 0, .35); }
+.key-card:hover { transform: translateY(-3px) rotate(-3deg); }
+.key-card:active { cursor: grabbing; }
+.key-card.is-dragging { opacity: .45; }
+.key-card:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+.key-card-brand { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+.key-card-chip { position: absolute; top: 34px; left: 12px; width: 22px; height: 16px; border-radius: 3px; background: linear-gradient(135deg, #e9cf8a, #b9973f); }
+.key-card-no { align-self: flex-end; font-size: 22px; font-weight: 800; position: relative; top: -20px; }
+
+.key-facts { display: flex; justify-content: center; gap: var(--s-5); animation: rise var(--med) var(--ease); }
+.key-facts dt { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.key-facts dd { font-size: 18px; font-weight: 800; }
+.key-return.is-done .place-title { color: var(--go); }
+
+@media (prefers-reduced-motion: reduce) {
+  .key-door.is-waiting, .key-return.is-turning .key-door .room-cell, .key-in, .key-facts { animation: none; }
+}
+
+/* The board on one screen (wide screens, where a floor's 15 doors sit in one row): slimmer stat cards, the Check
+   out form as one band with its title beside the fields, the housekeepers on one line, shorter doors. */
+@media (min-width: 1180px) {
+  .page.is-fit { padding-bottom: var(--s-5); }
+  .page.is-fit .stats { margin-bottom: var(--s-3); gap: var(--s-3); grid-template-columns: repeat(var(--stat-cols, 6), minmax(0, 1fr)); }
+  .page.is-fit .stat { padding: 7px var(--s-4); }
+  .page.is-fit .stat-label { font-size: 13px; line-height: 1.25; }
+  .page.is-fit .stat-value { font-size: 22px; line-height: 1.2; margin: 0; }
+  .page.is-fit .stat-note { font-size: 11.5px; line-height: 1.3; }
+  .page.is-fit .stat-note { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .page.is-fit .toolbar { margin-bottom: var(--s-3); }
+
+  .page.is-fit .board-checkout { grid-template-columns: 170px minmax(0, 1fr); align-items: start; column-gap: var(--s-4); row-gap: var(--s-2); padding: 12px var(--s-5); margin-bottom: var(--s-3); }
+  .page.is-fit .board-checkout-head { flex-direction: column; align-items: flex-start; gap: 2px; padding-top: 2px; }
+  .page.is-fit .board-checkout-head .muted { font-size: 12px; line-height: 1.35; }
+  .page.is-fit .board-checkout .result-pill { grid-column: 1 / -1; }
+  .page.is-fit .board-checkout-fields { grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--s-3); }
+  .page.is-fit .board-checkout-help { font-size: 11.5px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .page.is-fit .board-checkout-field { gap: 4px; }
+  .page.is-fit .board-checkout-input { height: 40px; }
+  .page.is-fit .board-checkout-fields .btn { height: 40px; margin-top: 23px; }
+
+  /* one line that scrolls sideways; no bar, the right edge fades to say there is more */
+  .page.is-fit .staff-strip { flex-wrap: nowrap; overflow-x: auto; gap: 6px; margin-bottom: var(--s-3); padding: 2px 0;
+    scrollbar-width: none; -webkit-mask: linear-gradient(90deg, #000 calc(100% - 48px), transparent); mask: linear-gradient(90deg, #000 calc(100% - 48px), transparent); }
+  .page.is-fit .staff-strip::-webkit-scrollbar { display: none; }
+  .page.is-fit .staff-strip::after { content: ""; flex: none; width: 40px; }
+  .page.is-fit .staff-chip { flex: none; padding: 3px 8px 3px 10px; font-size: 13px; }
+
+  .page.is-fit .hotel { gap: 6px; padding: var(--s-3) 36px; }
+  .page.is-fit .corridor { gap: 4px; }
+  .page.is-fit .corridor-head { font-size: 11px; }
+  /* a door: its number and type on one line, its state (and who is on it) under them */
+  .page.is-fit .corridor-row .room-cell { display: grid; grid-template-columns: 1fr auto; align-content: space-between; column-gap: 2px;
+    min-height: 46px; padding: 8px 6px 5px; line-height: 1.2; }
+  .page.is-fit .corridor-row .rc-plate { font-size: 14px; }
+  .page.is-fit .corridor-row .rc-type { font-size: 10px; align-self: center; }
+  .page.is-fit .corridor-row .rc-foot { grid-column: 1 / -1; margin-top: 3px; }
+  .page.is-fit .legend-below { margin-top: var(--s-3); }
+}
+
+/* Work on one screen (computers): the three cards a little tighter, and the clean times as slim cards */
+@media (min-width: 1101px) {
+  .page.is-fit { padding-bottom: var(--s-5); }
+  .page.is-fit .work-card { padding: var(--s-4) var(--s-5); gap: 10px; }
+  .page.is-fit .work-card h2 { font-size: 18px; }
+  .page.is-fit .work-hint { font-size: 13px; line-height: 1.4; }
+  .page.is-fit .work-card .field-label { margin-bottom: 6px; }
+  .page.is-fit .work-card .input { height: 44px; font-size: 20px; }
+  .page.is-fit .clean-times { padding: var(--s-3) var(--s-5); margin-top: var(--s-3); gap: 6px; }
+  .page.is-fit .clean-times-title { font-size: 16px; }
+  .page.is-fit .clean-times .stat { padding: 8px var(--s-4); }
+  .page.is-fit .clean-times .stat-value { font-size: 22px; line-height: 1.2; margin: 0; }
+}
+
+/* Check out: the rooms checked out this morning, as their doors in one row (scrolls sideways when there are many) */
+.out-strip {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-lg);
+  background:
+    repeating-linear-gradient(90deg, rgba(80, 60, 40, .04) 0 2px, transparent 2px 38px),
+    linear-gradient(170deg, #ece7df 0%, #ddd5c8 100%);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -3px 0 rgba(0, 0, 0, .06), var(--sh-2);
+}
+@media (min-width: 1024px) {
+  .page.is-fit .list-section { margin-top: var(--s-3); }
+  .page.is-fit .out-strip { padding: var(--s-2) var(--s-3); }
+  .page.is-fit .list-section .section-title { margin-bottom: var(--s-2); }
+  .page.is-fit .out-strip .room-cell { display: grid; grid-template-columns: 1fr auto; align-content: space-between; column-gap: 2px;
+    min-height: 46px; padding: 8px 6px 5px; line-height: 1.2; }
+  .page.is-fit .out-strip .rc-plate { font-size: 14px; }
+  .page.is-fit .out-strip .rc-type { font-size: 10px; align-self: center; }
+  .page.is-fit .out-strip .rc-foot { grid-column: 1 / -1; margin-top: 3px; }
+  .page.is-fit .list-section .empty { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); text-align: left; }
+  .page.is-fit .list-section .empty-text { max-width: none; }
+}

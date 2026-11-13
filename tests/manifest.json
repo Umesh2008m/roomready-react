@@ -1,0 +1,222 @@
+[
+  {
+    "ticket": "F-01",
+    "test": "the welcome page names the hotel, has the two-line heading and says what the board is for",
+    "criterion": 0,
+    "what_should_happen": "When the app opens on the welcome page, a small line above the heading reads \"Harbour View · housekeeping\". The big heading reads \"Sixty rooms.\" with \"No clipboard upstairs.\" on its second line, and a short paragraph under it says how every room moves through the day and what the board knows.",
+    "look_at": [
+      "src/pages/Welcome.jsx"
+    ],
+    "exact_words": [
+      "Harbour View · housekeeping",
+      "Sixty rooms.",
+      "No clipboard upstairs.",
+      "Every room moves from occupied to dirty, cleaned, inspected and ready, raced against the day's arrivals.",
+      "The board knows where each one is, who is on it, and how long before its guest it was ready."
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "with every guest still in the counts read 60 rooms, 0 ready and 0 dirty",
+    "criterion": 1,
+    "what_should_happen": "On a fresh start every guest is still in their room. Once the page has read the rooms, its three counts read 60 rooms, 0 ready and 0 dirty.",
+    "look_at": [
+      "src/pages/Welcome.jsx"
+    ],
+    "exact_words": [
+      "rooms",
+      "ready",
+      "dirty"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "criterion": 1,
+    "checked_by": "browser",
+    "reason": "That the ready number is drawn in green is a colour, which a pretend browser does not paint."
+  },
+  {
+    "ticket": "F-01",
+    "test": "with one room checked out the dirty count reads 1 and the other counts are unchanged",
+    "criterion": 2,
+    "what_should_happen": "Room 213's guest has checked out before the page opens. The counts come from the real hotel, so dirty reads 1 while rooms still reads 60 and ready still reads 0.",
+    "look_at": [
+      "src/pages/Welcome.jsx"
+    ],
+    "exact_words": [
+      "rooms",
+      "ready",
+      "dirty"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "the picture shows rooms 209 to 215 of floor 2, each with its number and its state",
+    "criterion": 3,
+    "what_should_happen": "Beside the heading there is a small picture of a corridor. It shows exactly the seven doors 209 to 215 from floor 2, each with its number and its state word, which on a fresh start is Occupied. No other room number is in it.",
+    "look_at": [
+      "src/pages/Welcome.jsx",
+      "src/components/RoomCell.jsx"
+    ],
+    "exact_words": [
+      "occupied"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "the picture follows the hotel: a checked-out 213 shows as Dirty",
+    "criterion": 3,
+    "what_should_happen": "Room 213's guest has checked out before the page opens. The picture is drawn from the real rooms, so door 213 shows Dirty while 215 is still Occupied.",
+    "look_at": [
+      "src/pages/Welcome.jsx",
+      "src/components/RoomCell.jsx"
+    ],
+    "exact_words": [
+      "Dirty",
+      "occupied"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "criterion": 3,
+    "checked_by": "browser",
+    "reason": "Each state word drawn in its state's colour is a colour; the type shown on each door is checked on the board, where its words are given."
+  },
+  {
+    "ticket": "F-01",
+    "test": "the doors are only a picture: clicking one does nothing",
+    "criterion": 4,
+    "what_should_happen": "Clicking a door in the picture, 209 or 213, does nothing. The address stays on the welcome page, the person cards are still there and no panel opens.",
+    "look_at": [
+      "src/pages/Welcome.jsx",
+      "src/components/RoomCell.jsx"
+    ],
+    "exact_words": [
+      "Who are you today?"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "under \"Who are you today?\" four cards show Grace, Pradeep, Sunita and Mr Menon with their roles and blurbs",
+    "criterion": 5,
+    "what_should_happen": "Under the heading \"Who are you today?\" and its one-line note there are four person cards. Each card shows the person's name, their role, their one-line blurb and \"Continue as\" with their name.",
+    "look_at": [
+      "src/pages/Welcome.jsx",
+      "src/data/personas.js"
+    ],
+    "exact_words": [
+      "Who are you today?",
+      "Each person sees their own screens. Everything they do changes the same hotel.",
+      "Continue as {name}",
+      "Grace",
+      "Supervisor · HK01",
+      "Runs housekeeping. Sees every room, assigns the dirty ones and inspects what others cleaned.",
+      "Pradeep",
+      "Front desk",
+      "Checks guests out at the desk. The room turns dirty the moment he does.",
+      "Sunita",
+      "Housekeeper · HK03",
+      "Cleans the rooms she is given. Starts the clock when she begins and stops it when she is done.",
+      "Mr Menon",
+      "General manager",
+      "Judges the morning on one number: how long before the guest each room was ready."
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "clicking 'Continue as Grace' changes the address to /supervisor/board",
+    "criterion": 6,
+    "what_should_happen": "Clicking Grace's card takes you to her first screen. The address becomes /supervisor/board.",
+    "look_at": [
+      "src/pages/Welcome.jsx",
+      "src/data/personas.js"
+    ],
+    "exact_words": [
+      "Continue as {name}",
+      "Grace"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "clicking 'Continue as Pradeep' changes the address to /desk/checkout",
+    "criterion": 7,
+    "what_should_happen": "Clicking Pradeep's card takes you to the front desk's screen. The address becomes /desk/checkout.",
+    "look_at": [
+      "src/pages/Welcome.jsx",
+      "src/data/personas.js"
+    ],
+    "exact_words": [
+      "Continue as {name}",
+      "Pradeep"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "clicking 'Continue as Sunita' changes the address to /housekeeper",
+    "criterion": 7,
+    "what_should_happen": "Clicking Sunita's card takes you to the housekeeper's screen. The address becomes /housekeeper.",
+    "look_at": [
+      "src/pages/Welcome.jsx",
+      "src/data/personas.js"
+    ],
+    "exact_words": [
+      "Continue as {name}",
+      "Sunita"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "clicking 'Continue as Mr Menon' changes the address to /manager/rooms",
+    "criterion": 7,
+    "what_should_happen": "Clicking Mr Menon's card takes you to the general manager's screen. The address becomes /manager/rooms.",
+    "look_at": [
+      "src/pages/Welcome.jsx",
+      "src/data/personas.js"
+    ],
+    "exact_words": [
+      "Continue as {name}",
+      "Mr Menon"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "Tab moves through the four cards in order",
+    "criterion": 8,
+    "what_should_happen": "Pressing Tab on the welcome page reaches Grace's card. Each further Tab moves to the next card: Pradeep, then Sunita, then Mr Menon.",
+    "look_at": [
+      "src/pages/Welcome.jsx"
+    ],
+    "exact_words": [
+      "Continue as {name}",
+      "Grace",
+      "Pradeep",
+      "Sunita",
+      "Mr Menon"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "test": "Enter on a focused card opens that person's screen",
+    "criterion": 8,
+    "what_should_happen": "Tab until Sunita's card has the focus and press Enter. Her screen opens at /housekeeper, just as a click would open it.",
+    "look_at": [
+      "src/pages/Welcome.jsx"
+    ],
+    "exact_words": [
+      "Continue as {name}",
+      "Sunita"
+    ]
+  },
+  {
+    "ticket": "F-01",
+    "criterion": 9,
+    "checked_by": "browser",
+    "reason": "Below 1100px the cards going two per row, and below 1024px the picture moving under the heading, are layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-01",
+    "criterion": 10,
+    "checked_by": "browser",
+    "reason": "At phone width the cards stacking one per row and nothing scrolling sideways are layout, which a pretend browser does not draw."
+  }
+]
