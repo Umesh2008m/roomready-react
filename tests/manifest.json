@@ -2030,5 +2030,304 @@
     "criterion": 14,
     "checked_by": "browser",
     "reason": "At phone width the door sitting above the text and the buttons wrapping are layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-09",
+    "test": "the third card reads '3 Inspect' with its hint; Room shows the first room to inspect, Inspector shows Grace and Pass is pressed",
+    "criterion": 0,
+    "what_should_happen": "Room 115 is dirty and 214 waits for inspection when Grace opens Work. The third card reads \"3 Inspect\" with its hint about rooms to inspect coming first. Its Room drop-down shows Room 214, Inspector shows Grace, and Pass is pressed rather than Fail.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Inspect",
+      "Somebody other than the cleaner passes or fails it. Rooms to inspect are listed first.",
+      "Room",
+      "Inspector",
+      "Pass",
+      "Fail",
+      "Room {no}",
+      "Grace"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "the Inspect card's Room list puts the rooms to inspect first, then the rest in the Assign list's order",
+    "criterion": 1,
+    "what_should_happen": "Rooms 214 and 401 wait for inspection, and others are dirty, assigned or occupied. The Inspect card's Room list starts with Room 214 and Room 401, and after them come all the other rooms in the same order as the Assign card's list.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Room",
+      "Room {no}"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "passing 214 at 12:20 with its guest due at 13:00 reads '214 is ready, 40 min before its guest.', and on the board 214 is Ready",
+    "criterion": 2,
+    "what_should_happen": "Sunita has finished 214, whose next guest is due at 13:00. At 12:20 Grace leaves Pass pressed and clicks \"Record the inspection\", and a line reads \"214 is ready, 40 min before its guest.\" On the board door 214 now reads Ready and the Ready card counts 1.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Record the inspection",
+      "is ready",
+      "min before its guest",
+      "The board",
+      "Room {no}, {type}, {state}",
+      "Ready"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "passing 214 at 12:20 with its guest due at 12:05 reads '214 is ready, 15 min after its guest was due.'",
+    "criterion": 2,
+    "what_should_happen": "This time 214's next guest was due at 12:05, before Grace inspects at 12:20. Passing it reads \"214 is ready, 15 min after its guest was due.\"",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Record the inspection",
+      "is ready",
+      "min after its guest was due"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "criterion": 2,
+    "checked_by": "browser",
+    "reason": "The answer line being green is a colour; its words are tested here and in the next two criteria."
+  },
+  {
+    "ticket": "F-09",
+    "test": "passing 214 with no next guest given reads '214 is ready (no arrival known).'",
+    "criterion": 3,
+    "what_should_happen": "No next guest was given when 214 was checked out. Grace passes it, and the line reads \"214 is ready (no arrival known).\"",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Record the inspection",
+      "is ready",
+      "(no arrival known)"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "Fail reads '214 failed: back to dirty, for a new assignment.', and 214 can be assigned again as AS002",
+    "criterion": 4,
+    "what_should_happen": "Grace presses Fail and records the inspection of 214. The line reads \"214 failed: back to dirty, for a new assignment.\" The room is dirty again, so assigning it in the first card gives the new assignment AS002.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Fail",
+      "Record the inspection",
+      "{room} failed: back to dirty, for a new assignment.",
+      "Room {no}",
+      "Assign",
+      "{room} is {name}’s: assignment {id}."
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "Sunita inspecting the room she cleaned reads 'Somebody else must inspect it'",
+    "criterion": 5,
+    "what_should_happen": "Sunita cleaned 214 and Grace picks Sunita as the inspector. Recording it reads \"Somebody else must inspect it\", and explains that the inspector cleaned this room.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Inspector",
+      "Sunita",
+      "Record the inspection",
+      "Somebody else must inspect it",
+      "The inspector cleaned this room; somebody else must inspect it"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "inspecting 214 while it is still being cleaned reads 'A step was skipped' and 'This room is already being cleaned; finish the clean first.'",
+    "criterion": 6,
+    "what_should_happen": "Room 214 is still being cleaned when Grace records an inspection of it. The line reads \"A step was skipped\", with \"This room is already being cleaned\" and \"finish the clean first\".",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Record the inspection",
+      "A step was skipped",
+      "This room is already being cleaned",
+      "finish the clean first"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "inspecting dirty 214 reads 'A step was skipped' and 'This room is dirty and nobody is on it yet; assign it first.'",
+    "criterion": 7,
+    "what_should_happen": "Room 214 is dirty and nobody has it when Grace records an inspection of it. The line reads \"A step was skipped\", with \"This room is dirty and nobody is on it yet\" and \"assign it first\".",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Record the inspection",
+      "A step was skipped",
+      "This room is dirty and nobody is on it yet",
+      "assign it first"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "criterion": 5,
+    "checked_by": "browser",
+    "reason": "The refusal line being orange is a colour; its words are tested here and in the next two criteria."
+  },
+  {
+    "ticket": "F-09",
+    "test": "changing the room, the inspector, or Pass and Fail takes the line away",
+    "criterion": 8,
+    "what_should_happen": "An inspection of dirty 214 is refused and the orange line shows. Picking another room takes it away, and so does picking another inspector after the next refusal, and so does pressing Fail after the one after that.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Record the inspection",
+      "A step was skipped",
+      "Inspector",
+      "Sunita",
+      "Fail"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "with no clean finished, 'Clean time by type' shows '—' and 'no clean finished yet' for Standard, Deluxe and Suite",
+    "criterion": 9,
+    "what_should_happen": "No clean has finished yet. Under \"Clean time by type\" and its note about the minutes stamped at each Finish, Standard, Deluxe and Suite each show \"—\" and \"no clean finished yet\".",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Clean time by type",
+      "From each Finish: the minutes stamped once, never recomputed.",
+      "Standard",
+      "Deluxe",
+      "Suite",
+      "no clean finished yet"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "one Deluxe clean of 23 minutes shows Deluxe '23 min' and 'mean of 1 clean'",
+    "criterion": 10,
+    "what_should_happen": "Grace assigns, starts and finishes 214, a Deluxe room, 23 minutes apart. The Deluxe figure reads \"23 min\" with \"mean of 1 clean\", while Standard still reads \"—\".",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/state/AppContext.jsx"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Assign",
+      "Start",
+      "Finish",
+      "Started at {time}.",
+      "Clean time by type",
+      "Deluxe",
+      "mean of {n} {cleans}",
+      "clean",
+      "Standard",
+      "no clean finished yet"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "two Deluxe cleans of 20 and 26 minutes show Deluxe '23 min' and 'mean of 2 cleans'",
+    "criterion": 11,
+    "what_should_happen": "Two Deluxe rooms, 214 and 215, are cleaned in 20 and 26 minutes. The Deluxe figure reads \"23 min\" with \"mean of 2 cleans\".",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Assign",
+      "Start",
+      "Finish",
+      "Assignment",
+      "Clean time by type",
+      "Deluxe",
+      "mean of {n} {cleans}",
+      "cleans"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "a room passed before its known guest makes the board's On time card read '1 of 1' with 'ready before their guest'",
+    "criterion": 12,
+    "what_should_happen": "Grace passes 214 forty minutes before its guest is due. On the board, the On time card reads \"1 of 1\" with \"ready before their guest\".",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/state/AppContext.jsx"
+    ],
+    "exact_words": [
+      "Record the inspection",
+      "is ready",
+      "min before its guest",
+      "The board",
+      "On time",
+      "{n} of {m}",
+      "ready before their guest"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "a room made ready after its guest was due counts only in the second number of On time",
+    "criterion": 12,
+    "what_should_happen": "Grace passes 214 before its guest and 215 after its guest was due. The On time card reads \"1 of 2\": both rooms count in the second number, and only 214 in the first.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Record the inspection",
+      "is ready",
+      "min before its guest",
+      "min after its guest was due",
+      "Room {no}",
+      "The board",
+      "On time",
+      "{n} of {m}",
+      "ready before their guest"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "test": "by keyboard: the drop-downs work with Enter, ↓, ↑ and Esc, Pass and Fail press with Space or Enter, and Enter on 'Record the inspection' records it",
+    "criterion": 13,
+    "what_should_happen": "Using only the keyboard, Grace opens the Inspect card's Room list with Enter, moves down to Room 215 with the arrows and picks it with Enter, and opens and closes the Inspector list with ↓ and Esc. Space presses Fail and Enter presses Pass again. Enter on \"Record the inspection\" then records the pass, and the line says 215 is ready.",
+    "look_at": [
+      "src/pages/supervisor/Work.jsx",
+      "src/components/Dropdown.jsx"
+    ],
+    "exact_words": [
+      "Room {no}",
+      "Inspector",
+      "Pass",
+      "Fail",
+      "Record the inspection",
+      "is ready",
+      "(no arrival known)"
+    ]
+  },
+  {
+    "ticket": "F-09",
+    "criterion": 14,
+    "checked_by": "browser",
+    "reason": "The Work cards and then the three clean times stacking on narrow screens are layout, which a pretend browser does not draw."
   }
 ]

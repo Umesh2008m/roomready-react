@@ -128,6 +128,7 @@ function RoomDrawer({ no, onClose }) {
  * backend refuses shows its refusal.
  */
 export default function Board() {
+  const { told } = useApp();
   const [params, setParams] = useSearchParams();
   const [selected, setSelected] = useState(null);
 
@@ -147,6 +148,9 @@ export default function Board() {
   const shown = answer.status === 200 ? answer.body.rooms : [];
   const count = (s) => all.filter((r) => r.state === s).length;
   const staff = staffAnswer.status === 200 ? staffAnswer.body.housekeepers : null;
+  // of the rooms made ready for a known guest, how many before the guest (the margins the answers gave)
+  const margins = told.ready.filter((r) => r.margin !== null).map((r) => r.margin);
+  const onTime = { known: margins.length, early: margins.filter((m) => m >= 0).length };
 
   function setFilter(name, value) {
     const next = new URLSearchParams(params);
@@ -172,7 +176,7 @@ export default function Board() {
           <div className={`stat${everything.body.dirty ? ' is-alert' : ''}`}><span className="stat-label">Dirty</span><strong className="stat-value">{everything.body.dirty}</strong><span className="stat-note">waiting for a housekeeper</span></div>
           <div className="stat"><span className="stat-label">Being cleaned</span><strong className="stat-value">{count('assigned') + count('cleaning')}</strong><span className="stat-note">assigned or cleaning</span></div>
           <div className="stat"><span className="stat-label">To inspect</span><strong className="stat-value">{count('toinspect')}</strong><span className="stat-note">somebody else signs off</span></div>
-          <div className="stat"><span className="stat-label">On time</span><strong className="stat-value is-free">—</strong><span className="stat-note">once a room is ready for a known guest</span></div>
+          <div className="stat"><span className="stat-label">On time</span><strong className="stat-value is-free">{onTime.known ? `${onTime.early} of ${onTime.known}` : '—'}</strong><span className="stat-note">{onTime.known ? 'ready before their guest' : 'once a room is ready for a known guest'}</span></div>
         </div>
       )}
 

@@ -6,6 +6,7 @@ import { PROPERTY, STATES, TYPES } from './hotel.js';
 /** Where a room is, as a person says it, for a step that came too early or too late. */
 const IS = {
   occupied: 'This room still has its guest',
+  dirty: 'This room is dirty and nobody is on it yet',
   assigned: 'This room is assigned, but its clean has not started',
   cleaning: 'This room is already being cleaned',
   toinspect: 'This room is waiting for inspection',
@@ -16,6 +17,7 @@ const IS = {
 /** What has to happen first, for each step the room needs. */
 const FIRST = {
   checkout: 'check the guest out first',
+  assign: 'assign it first',
   start: 'start the clean first',
   finish: 'finish the clean first',
   inspect: 'inspect it first',
@@ -41,6 +43,8 @@ function fieldSays(form, { field, message }) {
       if (message.includes('checkout')) return 'The next guest cannot be due before the checkout.';
       return 'Type when the next guest is due as a full date and time.';
     case 'housekeeper': return 'Pick a housekeeper first.';
+    case 'inspector': return 'Pick an inspector first.';
+    case 'result': return 'Pick Pass or Fail.';
     case 'floor': return 'Pick a floor: 1, 2, 3 or 4.';
     case 'state': return `Pick a state: ${STATE_CHOICES}.`;
     case 'type': return `Pick a type: ${either(TYPES)}.`;

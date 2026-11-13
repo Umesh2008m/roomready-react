@@ -7,8 +7,8 @@ import { api } from '../api.js';
 const AppContext = createContext(null);
 
 /**
- * What the screens were told and keep, because no GET returns it: the room of each assignment (the Assign answer)
- * and each clean's minutes (the Finish answer).
+ * What the screens were told and keep, because no GET returns it: the room of each assignment (the Assign answer),
+ * each clean's minutes (the Finish answer), and each room made ready with its margin (a passed inspection).
  */
 function remember(told, path, body) {
   if (path === '/assignments') return { ...told, rooms: { ...told.rooms, [body.assignmentId]: body.room } };
@@ -16,13 +16,14 @@ function remember(told, path, body) {
     const room = told.rooms[body.assignmentId];
     return room ? { ...told, cleans: [...told.cleans, { room, minutes: body.cleanMinutes }] } : told;
   }
+  if (path === '/inspections' && body.state === 'ready') return { ...told, ready: [...told.ready, { room: body.room, margin: body.marginMinutes }] };
   return told;
 }
 
 export function AppProvider({ children }) {
   // Bumped by every change and every 20 seconds, so the screens read their data again (a real frontend refetches).
   const [version, setVersion] = useState(0);
-  const [told, setTold] = useState({ rooms: {}, cleans: [] });
+  const [told, setTold] = useState({ rooms: {}, cleans: [], ready: [] });
 
   // Time passes while the page is open, so the minutes on a room grow on their own.
   useEffect(() => {
@@ -30,7 +31,7 @@ export function AppProvider({ children }) {
     return () => clearInterval(timer);
   }, []);
 
-  /** A request that changes the data, such as a checkout. */
+  /** A request that changes the data: a checkout, an assignment, a start, a finish, an inspection. */
   async function post(path, body) {
     const answer = await api.post(path, body);
     if (answer.status < 300) {

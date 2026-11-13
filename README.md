@@ -14,7 +14,7 @@
 - [x] Ticket 6 · Taking back the key
 - [x] Ticket 7 · Assigning the work
 - [x] Ticket 8 · The housekeeper's rooms
-- [ ] Ticket 9 · Inspecting
+- [x] Ticket 9 · Inspecting
 - [ ] Ticket 10 · Ready before arrival
 
 ## Run it
