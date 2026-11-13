@@ -2329,5 +2329,327 @@
     "criterion": 14,
     "checked_by": "browser",
     "reason": "The Work cards and then the three clean times stacking on narrow screens are layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-10",
+    "test": "with every guest still in, Rooms says 'Every guest is still in'",
+    "criterion": 0,
+    "what_should_happen": "Nobody has checked out when Mr Menon opens Rooms under \"Harbour View · ready before arrival\". The page says \"Every guest is still in\" and that a room appears here with its whole day once Pradeep checks it out, and no table is shown.",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx"
+    ],
+    "exact_words": [
+      "Harbour View · ready before arrival",
+      "Rooms",
+      "Every guest is still in",
+      "When Pradeep checks a room out, it appears here with its whole day."
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "a table lists every room no longer occupied, in number order, with Room, Type, Now and an arrow button on each row",
+    "criterion": 1,
+    "what_should_happen": "Rooms 401, 214 and 101 have been checked out and 214 is already assigned. The table has the columns Room, Type and Now, and its rows read 101 Standard Dirty, 214 Deluxe Assigned and 401 Standard Dirty, in number order. Each row has an arrow button such as \"Open room 214’s card\".",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx"
+    ],
+    "exact_words": [
+      "Room",
+      "Type",
+      "Now",
+      "Open room {no}’s card"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "the card of the first ready room is shown when the page opens, or of the first room if none is ready",
+    "criterion": 2,
+    "what_should_happen": "Room 101 is dirty and 214 has been made ready. When the page opens, the card shown beside the table is 214's, \"Room 214 · Ready\", because it is the first ready room.",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx"
+    ],
+    "exact_words": [
+      "Room {no} · {state}"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "with no room ready, the card of the first room in the table is shown",
+    "criterion": 2,
+    "what_should_happen": "Rooms 101 and 401 are both dirty and none is ready. When the page opens, the card shown is the first room's, \"Room 101 · Dirty\".",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx"
+    ],
+    "exact_words": [
+      "Room {no} · {state}"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "criterion": 2,
+    "checked_by": "browser",
+    "reason": "The shown room's row being highlighted is a colour, which a pretend browser does not paint; which card is shown is tested."
+  },
+  {
+    "ticket": "F-10",
+    "test": "clicking a row, or its arrow ('Open room 214’s card'), shows that room's card",
+    "criterion": 3,
+    "what_should_happen": "The card of 101 is showing. Clicking the arrow on 214's row shows \"Room 214 · Dirty\" instead, and clicking on 401's row itself shows \"Room 401 · Dirty\".",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx"
+    ],
+    "exact_words": [
+      "Open room {no}’s card",
+      "Room {no} · {state}"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "214, passed at 12:20 for a guest due at 13:00, shows Ready '12:20', Guest due '13:00' and Margin '40 min'",
+    "criterion": 4,
+    "what_should_happen": "Room 214 passed inspection at 12:20 and its guest is due at 13:00. Its card reads \"Room 214 · Ready\" with three figures: Ready 12:20 \"passed inspection\", Guest due 13:00 \"typed in at checkout\", and Margin \"40 min\" with \"40 min before the guest\".",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx",
+      "src/components/RoomNotebook.jsx"
+    ],
+    "exact_words": [
+      "Room {no} · {state}",
+      "Ready",
+      "passed inspection",
+      "Guest due",
+      "typed in at checkout",
+      "Margin",
+      "{n} min",
+      "min before the guest"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "a room ready after its guest arrived shows the Margin as a minus figure, with '15 min after the guest'",
+    "criterion": 5,
+    "what_should_happen": "This time 214's guest was due at 12:05, before it was passed at 12:20. The Margin reads \"-15 min\" with \"15 min after the guest\", and Guest due reads 12:05.",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx",
+      "src/components/RoomNotebook.jsx"
+    ],
+    "exact_words": [
+      "Margin",
+      "{n} min",
+      "min after the guest",
+      "Guest due",
+      "typed in at checkout"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "criterion": 4,
+    "checked_by": "browser",
+    "reason": "The Margin drawn in green when early, and in red when late, is a colour; the figures and words are tested here and in the next criterion."
+  },
+  {
+    "ticket": "F-10",
+    "test": "with no next guest given, Guest due and Margin both show '—' and 'no arrival known'",
+    "criterion": 6,
+    "what_should_happen": "Nobody typed a next guest when 214 was checked out, and it has since been made ready. Its card still shows Ready 12:20, but Guest due and Margin both show \"—\" with \"no arrival known\".",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx",
+      "src/components/RoomNotebook.jsx"
+    ],
+    "exact_words": [
+      "Guest due",
+      "Margin",
+      "no arrival known",
+      "Ready",
+      "passed inspection"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "a room that has not passed inspection in this stay says 'Not ready yet in this stay.'",
+    "criterion": 7,
+    "what_should_happen": "Room 214 has been cleaned but not yet inspected. Its card reads \"Room 214 · To inspect\" and \"Not ready yet in this stay. Its card fills in once it passes inspection.\", with no ready figures.",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx"
+    ],
+    "exact_words": [
+      "Room {no} · {state}",
+      "Not ready yet in this stay. Its card fills in once it passes inspection.",
+      "passed inspection"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "'Open room 214’s day' opens a notebook page with 'The room’s day · Harbour View', 'Room 214' and 'What happened', one line per step in time order",
+    "criterion": 8,
+    "what_should_happen": "Mr Menon clicks \"Open room 214’s day\" on its card. A notebook page opens over the screen with \"The room’s day · Harbour View\", the heading \"Room 214\", \"What happened\" and \"Can’t be re-ticked\". It has five lines, one per step, each with its day and time, in time order from 11:00 to 12:20.",
+    "look_at": [
+      "src/components/RoomNotebook.jsx",
+      "src/pages/manager/Rooms.jsx",
+      "src/data/format.js"
+    ],
+    "exact_words": [
+      "Open room {no}’s day",
+      "The room’s day",
+      "Room {no}",
+      "What happened",
+      "Can’t be re-ticked"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "the day of a room that went all the way reads checked out, assigned to Sunita, started, finished in 23 min and passed by Grace",
+    "criterion": 9,
+    "what_should_happen": "Room 214 went all the way to ready. Its day's lines read \"Guest checked out\" with \"the room is dirty\", \"Assigned to Sunita\" with HK03, \"Clean started\", \"Clean finished\" with 23 min, and \"Passed by Grace\" with \"ready · 40 min before the guest\".",
+    "look_at": [
+      "src/components/RoomNotebook.jsx"
+    ],
+    "exact_words": [
+      "Open room {no}’s day",
+      "What happened",
+      "Guest checked out",
+      "the room is dirty",
+      "Assigned to {name}",
+      "Clean started",
+      "Clean finished",
+      "{n} min",
+      "Passed"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "a failed inspection's line reads 'Failed by Grace · back to dirty'",
+    "criterion": 9,
+    "what_should_happen": "This time Grace failed 214 at inspection. The last line of its day reads \"Failed by Grace\" with \"back to dirty\".",
+    "look_at": [
+      "src/components/RoomNotebook.jsx"
+    ],
+    "exact_words": [
+      "Room {no} · {state}",
+      "Open room {no}’s day",
+      "What happened",
+      "Failed",
+      "back to dirty"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "the day's head carries a stamp with the first word of the last line, 'Passed'",
+    "criterion": 10,
+    "what_should_happen": "The last line of 214's day is Grace's pass. The head of the page carries a stamp that reads just \"Passed\".",
+    "look_at": [
+      "src/components/RoomNotebook.jsx"
+    ],
+    "exact_words": [
+      "Open room {no}’s day",
+      "What happened",
+      "Passed"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "the box at the foot, 'How this page works', explains the page and ends 'Last line at 12:20.'",
+    "criterion": 11,
+    "what_should_happen": "At the foot of the day a box headed \"How this page works\" explains that every step adds a line, a refused step leaves none and lines are only ever added. It says how to close the page and ends with \"Last line at 12:20.\"",
+    "look_at": [
+      "src/components/RoomNotebook.jsx"
+    ],
+    "exact_words": [
+      "Open room {no}’s day",
+      "What happened",
+      "How this page works",
+      "Every step a room goes through adds a line here, written together with the step itself, with who did it. A refused step leaves no line. Lines are only ever added: when a guest is sent to an unclean room, this page says who signed it off and when.",
+      "It opens over the page you are on. Close it with ×, Esc or a click outside and you are right where you were.",
+      "Last line at {time}."
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "× ('Close the notebook') closes the day and Mr Menon is exactly where he was",
+    "criterion": 12,
+    "what_should_happen": "With 214's day open, Mr Menon presses × (\"Close the notebook\"). The page closes and he is back on Rooms with 214's card still showing.",
+    "look_at": [
+      "src/components/RoomNotebook.jsx",
+      "src/pages/manager/Rooms.jsx"
+    ],
+    "exact_words": [
+      "Open room {no}’s day",
+      "What happened",
+      "Close the notebook",
+      "Room {no} · {state}"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "Esc closes the day and Mr Menon is exactly where he was",
+    "criterion": 12,
+    "what_should_happen": "With 214's day open, Mr Menon presses Esc. The page closes and he is back on Rooms with 214's card still showing.",
+    "look_at": [
+      "src/components/RoomNotebook.jsx",
+      "src/pages/manager/Rooms.jsx"
+    ],
+    "exact_words": [
+      "Open room {no}’s day",
+      "What happened",
+      "Room {no} · {state}"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "criterion": 12,
+    "checked_by": "browser",
+    "reason": "A click outside lands on the shade that covers the page around the notebook, and only a real layout says where that shade is."
+  },
+  {
+    "ticket": "F-10",
+    "criterion": 13,
+    "checked_by": "browser",
+    "reason": "Only the notebook scrolling, with its own slim bar, while the screen behind stays still needs real heights and a real wheel."
+  },
+  {
+    "ticket": "F-10",
+    "test": "on Grace's board, 'Open room 214’s day' in a drawer closes the drawer and opens the same day over the board",
+    "criterion": 14,
+    "what_should_happen": "On Grace's board she opens the drawer of 214, which is ready, and clicks \"Open room 214’s day\". The drawer closes and the same day opens over the board, ending with Grace's pass, while the address stays on the board.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/components/RoomNotebook.jsx"
+    ],
+    "exact_words": [
+      "Room {no}, {type}, {state}",
+      "Ready",
+      "Open room {no}’s day",
+      "What happened",
+      "Close",
+      "Room {no}",
+      "Passed"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "test": "by keyboard: Enter on a row arrow changes the card, Enter on its day button opens the day on ×, and Esc goes back to that button",
+    "criterion": 15,
+    "what_should_happen": "Using only the keyboard, Mr Menon tabs to 401's row arrow and presses Enter, and 401's card shows. He tabs on to \"Open room 401’s day\" and presses Enter, and the day opens with the focus on ×. Esc closes it and the focus goes back to \"Open room 401’s day\".",
+    "look_at": [
+      "src/pages/manager/Rooms.jsx",
+      "src/components/RoomNotebook.jsx"
+    ],
+    "exact_words": [
+      "Open room {no}’s card",
+      "Room {no} · {state}",
+      "Open room {no}’s day",
+      "Close the notebook"
+    ]
+  },
+  {
+    "ticket": "F-10",
+    "criterion": 16,
+    "checked_by": "browser",
+    "reason": "Below 1024px the card moving under the table is layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-10",
+    "criterion": 17,
+    "checked_by": "browser",
+    "reason": "At phone width the notebook's narrower margins and its heading wrapping are layout, which a pretend browser does not draw."
   }
 ]

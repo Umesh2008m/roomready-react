@@ -15,7 +15,7 @@
 - [x] Ticket 7 · Assigning the work
 - [x] Ticket 8 · The housekeeper's rooms
 - [x] Ticket 9 · Inspecting
-- [ ] Ticket 10 · Ready before arrival
+- [x] Ticket 10 · Ready before arrival
 
 ## Run it
 

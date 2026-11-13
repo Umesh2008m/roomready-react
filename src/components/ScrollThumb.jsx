@@ -1,27 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * A slim scrollbar drawn by the app, for the page itself. The browser's own bar is hidden there with
- * the `has-thumb` class. It exists because browsers do not let a page change the cursor over their own scrollbar:
+ * A slim scrollbar drawn by the app, for the page itself (no `target`) or for one scrolling box (`target` is a ref to
+ * it). The browser's own bar is hidden there with the `has-thumb` class.
+ * It exists because browsers do not let a page change the cursor over their own scrollbar:
  * this one shows a hand, can be dragged, and a click on its track jumps there. Wheel, keys and
- * touch keep scrolling the page natively; this bar only follows and drives scrollTop.
+ * touch keep scrolling the element natively; this bar only follows and drives scrollTop.
  */
-export default function ScrollThumb() {
+export default function ScrollThumb({ target }) {
   const trackRef = useRef(null);
   const drag = useRef(null);
   const [bar, setBar] = useState({ show: false, size: 0, top: 0 });
 
-  const elementOf = () => document.scrollingElement;
-  const viewOf = () => window.innerHeight;
+  const elementOf = () => (target ? target.current : document.scrollingElement);
+  const viewOf = (el) => (target ? el.clientHeight : window.innerHeight);
 
   useEffect(() => {
     const el = elementOf();
     if (!el) return undefined;
-    document.documentElement.classList.add('has-thumb');
+    const source = target ? el : window;
+    (target ? el : document.documentElement).classList.add('has-thumb');
 
     function measure() {
       const track = trackRef.current?.clientHeight ?? 0;
-      const view = viewOf();
+      const view = viewOf(el);
       const total = el.scrollHeight;
       const room = total - view;
       if (room <= 1 || !track) { setBar((b) => (b.show ? { ...b, show: false } : b)); return; }
@@ -31,18 +33,19 @@ export default function ScrollThumb() {
     }
 
     measure();
-    window.addEventListener('scroll', measure, { passive: true });
+    source.addEventListener('scroll', measure, { passive: true });
     window.addEventListener('resize', measure);
     const sizes = new ResizeObserver(measure);
-    sizes.observe(document.body);
+    sizes.observe(target ? el : document.body);
+    if (target) [...el.children].forEach((child) => sizes.observe(child));
     return () => {
-      window.removeEventListener('scroll', measure);
+      source.removeEventListener('scroll', measure);
       window.removeEventListener('resize', measure);
       sizes.disconnect();
-      document.documentElement.classList.remove('has-thumb');
+      (target ? el : document.documentElement).classList.remove('has-thumb');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [target]);
 
   function startDrag(e) {
     e.preventDefault();
@@ -56,7 +59,7 @@ export default function ScrollThumb() {
     if (!drag.current) return;
     const el = elementOf();
     const track = trackRef.current.clientHeight;
-    const perPixel = (el.scrollHeight - viewOf()) / Math.max(1, track - bar.size);
+    const perPixel = (el.scrollHeight - viewOf(el)) / Math.max(1, track - bar.size);
     el.scrollTop = drag.current.scroll + (e.clientY - drag.current.y) * perPixel;
   }
 
@@ -67,11 +70,11 @@ export default function ScrollThumb() {
     const el = elementOf();
     const rect = trackRef.current.getBoundingClientRect();
     const share = (e.clientY - rect.top - bar.size / 2) / Math.max(1, rect.height - bar.size);
-    el.scrollTo({ top: Math.min(1, Math.max(0, share)) * (el.scrollHeight - viewOf()), behavior: 'smooth' });
+    el.scrollTo({ top: Math.min(1, Math.max(0, share)) * (el.scrollHeight - viewOf(el)), behavior: 'smooth' });
   }
 
   return (
-    <div ref={trackRef} className={`scroll-track is-page${bar.show ? '' : ' is-idle'}`}
+    <div ref={trackRef} className={`scroll-track${target ? ' is-inside' : ' is-page'}${bar.show ? '' : ' is-idle'}`}
       onPointerDown={jump} aria-hidden="true">
       <div className="scroll-thumb" style={{ height: bar.size, transform: `translateY(${bar.top}px)` }}
         onPointerDown={startDrag} onPointerMove={onDrag} onPointerUp={endDrag} onPointerCancel={endDrag} />

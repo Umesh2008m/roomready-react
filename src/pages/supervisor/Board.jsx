@@ -4,6 +4,7 @@ import Dropdown from '../../components/Dropdown.jsx';
 import Icon from '../../components/Icon.jsx';
 import Problem from '../../components/Problem.jsx';
 import RoomCell from '../../components/RoomCell.jsx';
+import RoomNotebook from '../../components/RoomNotebook.jsx';
 import SectionTabs from '../../components/SectionTabs.jsx';
 import { formatTime, istInputToApi, openPicker, toIstInput } from '../../data/format.js';
 import { FLOORS, PROPERTY, STATES, TYPES } from '../../data/hotel.js';
@@ -72,7 +73,7 @@ function BoardCheckout() {
  * One room, read on its own from GET /properties/harbour-view/rooms/{no}. It takes the focus on its ✕ when it opens;
  * ✕, Esc or a click outside closes it, and the focus goes back to the door that opened it.
  */
-function RoomDrawer({ no, onClose }) {
+function RoomDrawer({ no, onClose, onOpenDay }) {
   const { told } = useApp();
   const answer = useGet(`/properties/${PROPERTY.slug}/rooms/${no}`);
   const closeRef = useRef(null);
@@ -114,6 +115,9 @@ function RoomDrawer({ no, onClose }) {
               {room.sinceMinutes != null && <div><dt>For</dt><dd className="mono">{room.sinceMinutes} min</dd></div>}
               {clean && <div><dt>Last clean</dt><dd className="mono">{clean.minutes} min</dd></div>}
             </dl>
+            {room.state !== 'occupied' && (
+              <button type="button" className="link-btn" onClick={() => onOpenDay(room.no)}>Open room {room.no}’s day <Icon name="arrow" size={14} /></button>
+            )}
             {room.state === 'dirty' && <p className="drawer-empty">Dirty. <Link to={`/supervisor/work?room=${room.no}`}>Assign it on Work</Link>.</p>}
           </>
         )}
@@ -131,6 +135,7 @@ export default function Board() {
   const { told } = useApp();
   const [params, setParams] = useSearchParams();
   const [selected, setSelected] = useState(null);
+  const [openDay, setOpenDay] = useState(null);
 
   const floor = params.get('floor') ?? '';
   const state = params.get('state') ?? '';
@@ -250,7 +255,8 @@ export default function Board() {
         {STATES.filter((s) => s.id !== 'out_of_order').map((s) => <li key={s.id}><span className={`dot is-${s.id}`} /> {s.name}</li>)}
       </ul>
 
-      {selected && <RoomDrawer no={selected} onClose={() => setSelected(null)} />}
+      {selected && <RoomDrawer no={selected} onClose={() => setSelected(null)} onOpenDay={(no) => { setSelected(null); setOpenDay(no); }} />}
+      {openDay && <RoomNotebook key={openDay} no={openDay} onClose={() => setOpenDay(null)} />}
     </div>
   );
 }

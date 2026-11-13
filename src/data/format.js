@@ -19,6 +19,15 @@ export function formatTime(ms) {
     .format(ms);
 }
 
+function formatDay(ms) {
+  return new Intl.DateTimeFormat('en-GB', { timeZone: ZONE, weekday: 'short', day: 'numeric', month: 'short' })
+    .format(ms);
+}
+
+export function formatWhen(ms) {
+  return `${formatDay(ms)}, ${formatTime(ms)}`;
+}
+
 /** Click anywhere in a date-time box: its calendar opens (where the browser can show it on request). */
 export function openPicker(e) {
   try { e.currentTarget.showPicker?.(); } catch { /* not allowed here: the box still takes typing */ }
