@@ -9,7 +9,7 @@ export function AppProvider({ children }) {
   // Bumped as time passes, so the screens read their data again.
   const [version, setVersion] = useState(0);
 
-  // Time passes while the page is open, so the screens read their data again every 20 seconds.
+  // Time passes while the page is open, so the minutes on a room grow on their own.
   useEffect(() => {
     const timer = setInterval(() => setVersion((v) => v + 1), 20_000);
     return () => clearInterval(timer);

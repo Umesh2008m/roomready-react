@@ -8,7 +8,7 @@
 
 - [x] Ticket 1 · The front door
 - [x] Ticket 2 · Moving between people
-- [ ] Ticket 3 · The board
+- [x] Ticket 3 · The board
 - [ ] Ticket 4 · Finding one room
 - [ ] Ticket 5 · The front desk checks a guest out
 - [ ] Ticket 6 · Taking back the key

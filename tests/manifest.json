@@ -508,5 +508,214 @@
     "criterion": 17,
     "checked_by": "browser",
     "reason": "The header wrapping, the menu scrolling inside itself and the tabs scrolling sideways at phone width are layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-03",
+    "test": "on a fresh hotel the six cards read Rooms 60, Ready 0, Dirty 0, Being cleaned 0, To inspect 0 and On time —, each with its note",
+    "criterion": 0,
+    "what_should_happen": "Grace's board opens under \"Harbour View · this morning\" and the title \"The board\". On a fresh hotel its six cards read Rooms 60, Ready 0, Dirty 0, Being cleaned 0, To inspect 0 and On time —, each with its short note under the number.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Harbour View · this morning",
+      "The board",
+      "Rooms",
+      "40 Standard · 12 Deluxe · 8 Suite",
+      "Ready",
+      "for the next guest",
+      "Dirty",
+      "waiting for a housekeeper",
+      "Being cleaned",
+      "assigned or cleaning",
+      "To inspect",
+      "somebody else signs off",
+      "On time",
+      "—",
+      "once a room is ready for a known guest"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "criterion": 1,
+    "checked_by": "browser",
+    "reason": "The Dirty card turning red when a room is dirty is a colour, which a pretend browser does not paint."
+  },
+  {
+    "ticket": "F-03",
+    "test": "Being cleaned counts the assigned rooms and the ones being cleaned together",
+    "criterion": 2,
+    "what_should_happen": "Room 101 is assigned to a housekeeper, 102 is being cleaned and 103 is still dirty. The Being cleaned card counts the first two together and reads 2, while Dirty reads 1.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Being cleaned",
+      "assigned or cleaning",
+      "Dirty",
+      "waiting for a housekeeper"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "test": "four corridors, Floor 1 to Floor 4, each hold their fifteen doors in number order",
+    "criterion": 3,
+    "what_should_happen": "Below the cards there are four corridors, one for each floor, headed \"Floor 1\" to \"Floor 4\". Each holds its own fifteen doors in number order, 101 to 115 on the first floor up to 401 to 415 on the fourth.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/components/RoomCell.jsx"
+    ],
+    "exact_words": [
+      "Floor {n}"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "test": "a corridor's head says how many of its rooms are ready and dirty, e.g. '0 ready · 2 dirty'",
+    "criterion": 4,
+    "what_should_happen": "Rooms 101 and 102 are dirty and 214 has been made ready. The head of the Floor 1 corridor reads \"0 ready · 2 dirty\", Floor 2 reads \"1 ready · 0 dirty\" and Floor 3 reads \"0 ready · 0 dirty\".",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "{n} ready · {n} dirty",
+      "Floor {n}"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "test": "every door shows its number, its type as Std, Dlx or Suite, and its state word",
+    "criterion": 5,
+    "what_should_happen": "Rooms on floor 1 are put into each state, from occupied through to ready. Every door shows its room number, its short type (Std, Dlx or Suite) and its state word: Occupied, Dirty, Assigned, Cleaning, To inspect or Ready.",
+    "look_at": [
+      "src/components/RoomCell.jsx",
+      "src/data/hotel.js"
+    ],
+    "exact_words": [
+      "Std",
+      "Dlx",
+      "Suite",
+      "Occupied",
+      "Dirty",
+      "Assigned",
+      "Cleaning",
+      "To inspect",
+      "Ready"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "criterion": 5,
+    "checked_by": "browser",
+    "reason": "The coloured state strip on each door is a colour; the state word beside it is tested."
+  },
+  {
+    "ticket": "F-03",
+    "test": "a room somebody is on names the housekeeper and the minutes since that step began, e.g. 'Sunita · 12m'",
+    "criterion": 6,
+    "what_should_happen": "Sunita started cleaning room 214 twelve minutes ago. Its door says Cleaning and also reads \"Sunita · 12m\".",
+    "look_at": [
+      "src/components/RoomCell.jsx"
+    ],
+    "exact_words": [
+      "Room {no}, {type}, {state}",
+      "Cleaning"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "test": "left alone, the minutes on a door grow by themselves",
+    "criterion": 7,
+    "what_should_happen": "Room 214's door reads \"Sunita · 12m\" and nobody touches the board. Two minutes later the same door reads \"Sunita · 14m\" without anything being clicked.",
+    "look_at": [
+      "src/components/RoomCell.jsx",
+      "src/state/AppContext.jsx"
+    ],
+    "exact_words": [
+      "Room {no}, {type}, {state}",
+      "Cleaning"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "test": "a change made while Grace was on another screen is already on the board when she comes back",
+    "criterion": 8,
+    "what_should_happen": "While Grace is on Work, room 101 is checked out and 102 is checked out and assigned. When she clicks back to The board, door 101 already reads Dirty, door 102 Assigned, and the Dirty and Being cleaned cards both read 1.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/state/AppContext.jsx"
+    ],
+    "exact_words": [
+      "The board",
+      "Room {no}, {type}, {state}",
+      "Dirty",
+      "Assigned",
+      "waiting for a housekeeper",
+      "Being cleaned",
+      "assigned or cleaning"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "test": "under the corridors a legend names the six states: Occupied, Dirty, Assigned, Cleaning, To inspect, Ready",
+    "criterion": 9,
+    "what_should_happen": "Under the corridors there is a legend of the room states. It names exactly six of them, in the order a room goes through them: Occupied, Dirty, Assigned, Cleaning, To inspect, Ready.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/data/hotel.js"
+    ],
+    "exact_words": [
+      "Occupied",
+      "Dirty",
+      "Assigned",
+      "Cleaning",
+      "To inspect",
+      "Ready"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "criterion": 9,
+    "checked_by": "browser",
+    "reason": "Each state's colour dot in the legend is a colour, and the legend sitting under the corridors is layout."
+  },
+  {
+    "ticket": "F-03",
+    "test": "before the rooms are read no cards and no doors are drawn, then both appear",
+    "criterion": 10,
+    "what_should_happen": "At the very moment the board opens, before the rooms have been read, no count card and no door is drawn, so no untrue number shows. As soon as the rooms are read, the cards and all sixty doors appear.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "waiting for a housekeeper",
+      "40 Standard · 12 Deluxe · 8 Suite"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "test": "Tab moves door by door in room order, each read out like 'Room 214, Deluxe, Occupied'",
+    "criterion": 11,
+    "what_should_happen": "Using only the keyboard, Tab reaches door 101 and then moves door by door in room order, through 115 and on to 201, up to 415. Each door is read out with its number, type and state, such as \"Room 214, Deluxe, Occupied\".",
+    "look_at": [
+      "src/components/RoomCell.jsx",
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Room {no}, {type}, {state}",
+      "Occupied"
+    ]
+  },
+  {
+    "ticket": "F-03",
+    "criterion": 12,
+    "checked_by": "browser",
+    "reason": "A corridor's doors wrapping onto more rows below 1180px is layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-03",
+    "criterion": 13,
+    "checked_by": "browser",
+    "reason": "The cards sitting three, then two per row on narrower screens is layout, which a pretend browser does not draw."
   }
 ]
