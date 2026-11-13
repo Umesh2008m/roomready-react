@@ -10,7 +10,7 @@
 - [x] Ticket 2 · Moving between people
 - [x] Ticket 3 · The board
 - [x] Ticket 4 · Finding one room
-- [ ] Ticket 5 · The front desk checks a guest out
+- [x] Ticket 5 · The front desk checks a guest out
 - [ ] Ticket 6 · Taking back the key
 - [ ] Ticket 7 · Assigning the work
 - [ ] Ticket 8 · The housekeeper's rooms

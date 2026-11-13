@@ -5,8 +5,10 @@ import Icon from '../../components/Icon.jsx';
 import Problem from '../../components/Problem.jsx';
 import RoomCell from '../../components/RoomCell.jsx';
 import SectionTabs from '../../components/SectionTabs.jsx';
+import { formatTime, istInputToApi, openPicker, toIstInput } from '../../data/format.js';
 import { FLOORS, PROPERTY, STATES, TYPES } from '../../data/hotel.js';
-import { useGet } from '../../state/AppContext.jsx';
+import { explain } from '../../data/messages.js';
+import { useApp, useGet } from '../../state/AppContext.jsx';
 
 function Segmented({ label, options, value, onChange }) {
   return (
@@ -18,6 +20,51 @@ function Segmented({ label, options, value, onChange }) {
         </button>
       ))}
     </div>
+  );
+}
+
+/**
+ * The Check out band on the board: Pradeep at the desk records the checkout (POST /checkouts, made as him), and the
+ * room turns dirty on Grace's board at once. The answer's stay, time and state are shown here.
+ */
+function BoardCheckout() {
+  const { post } = useApp();
+  const [room, setRoom] = useState('');
+  const [at, setAt] = useState(() => toIstInput(Date.now()));
+  const [arrival, setArrival] = useState('');
+  const [answer, setAnswer] = useState(null);
+
+  async function checkout(e) {
+    e.preventDefault();
+    const body = { room: room.trim() };
+    if (at) body.at = istInputToApi(at);                    // a blank time is left out, as a form would
+    if (arrival) body.arrivalAt = istInputToApi(arrival);
+    setAnswer(await post('/checkouts', body));
+  }
+
+  const ok = answer?.status === 201 ? answer.body : null;
+  return (
+    <form className="card board-checkout" onSubmit={checkout} noValidate aria-label="Check a guest out">
+      <div className="board-checkout-head">
+        <span className="board-checkout-title"><Icon name="door" size={16} /> Check out</span>
+        <span className="muted">Pradeep at the front desk · times in India time</span>
+      </div>
+      <div className="board-checkout-fields">
+        <label className="board-checkout-field"><span>Room</span>
+          <input id="bc-room" className="board-checkout-input mono" value={room} placeholder="e.g. 214" inputMode="numeric"
+            onChange={(e) => { setRoom(e.target.value); setAnswer(null); }} autoComplete="off" />
+          <small className="board-checkout-help">The guest’s room number</small></label>
+        <label className="board-checkout-field"><span>Checked out at</span>
+          <input id="bc-at" onClick={openPicker} className="board-checkout-input mono" type="datetime-local" value={at} onChange={(e) => { setAt(e.target.value); setAnswer(null); }} />
+          <small className="board-checkout-help">Filled in with now · change it if the guest left earlier</small></label>
+        <label className="board-checkout-field"><span>Next guest due <span className="muted">(optional)</span></span>
+          <input id="bc-arrival" onClick={openPicker} className="board-checkout-input mono" type="datetime-local" value={arrival} onChange={(e) => { setArrival(e.target.value); setAnswer(null); }} />
+          <small className="board-checkout-help">When the next guest for this room arrives</small></label>
+        <button type="submit" className="btn btn-primary">Check out <Icon name="door" size={16} /></button>
+      </div>
+      {ok && <p className="result-pill is-ok"><Icon name="check" size={16} strokeWidth={2.4} /><span>Room {ok.room} checked out at {formatTime(Date.parse(ok.checkedOutAt))} · stay {ok.stayId} · now {STATES.find((s) => s.id === ok.state)?.name.toLowerCase() ?? ok.state}.</span></p>}
+      {answer && !ok && <div className="result-pill is-no"><Icon name="alert" size={16} /><div><strong>{explain(answer).title}</strong><p>{explain(answer).text}</p></div></div>}
+    </form>
   );
 }
 
@@ -138,6 +185,8 @@ export default function Board() {
           </p>
         )}
       </div>
+
+      <BoardCheckout />
 
       <div className="staff-strip" aria-label="Housekeepers">
         <span className="staff-strip-label">Housekeepers</span>

@@ -1027,5 +1027,329 @@
     "criterion": 15,
     "checked_by": "browser",
     "reason": "The filter groups and housekeeper chips wrapping and the drawer filling a phone's width are layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-05",
+    "test": "the form has its three numbered boxes with their help lines, the time already filled with now, and a Check out button",
+    "criterion": 0,
+    "what_should_happen": "Pradeep's Check out screen has three numbered boxes, \"1 Room\", \"2 Checked out at (India time)\" and \"3 Next guest due (India time, optional)\", each with its help line under it. The Room box and the Next guest due box are empty, while Checked out at is already filled with today's date and the time now. A \"Check out\" button sits under them.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/data/format.js"
+    ],
+    "exact_words": [
+      "Harbour View · front desk",
+      "Check out",
+      "Room",
+      "Rooms 101–115 up to 401–415.",
+      "Checked out at",
+      "(India time)",
+      "Filled in with now. Not in the future, not before the guest checked in.",
+      "Next guest due",
+      "(India time, optional)",
+      "When the next guest for this room lands. The room’s margin is measured against it."
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "before anything is checked out the panel reads 'Check a guest out'",
+    "criterion": 1,
+    "what_should_happen": "Before Pradeep has checked anybody out, the panel beside the form reads \"Check a guest out\". Under it a line says the room turns dirty at once and housekeeping sees it on the board.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx"
+    ],
+    "exact_words": [
+      "Check a guest out",
+      "The room turns dirty at once, and housekeeping sees it on the board."
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "a date-and-time box can be clicked and then typed into",
+    "criterion": 2,
+    "what_should_happen": "Pradeep clicks in the Checked out at box and types a different time, and the box holds what he typed. The same works in the Next guest due box, so typing still works beside the calendar.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/data/format.js"
+    ],
+    "exact_words": [
+      "Checked out at",
+      "Next guest due"
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "criterion": 2,
+    "checked_by": "browser",
+    "reason": "The calendar that a click opens is drawn by the browser itself, and a pretend browser has none."
+  },
+  {
+    "ticket": "F-05",
+    "test": "checking 214 out makes door 214 Dirty on Grace's board and the Dirty count goes up by one",
+    "criterion": 3,
+    "what_should_happen": "Room 215 is already dirty. Pradeep types 214 and presses \"Check out\", then switches to Grace's board, where door 214 now reads Dirty and the Dirty card has gone up from 1 to 2.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Check out",
+      "Check a guest out",
+      "Pradeep",
+      "Grace",
+      "Room {no}, {type}, {state}",
+      "Dirty"
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "with the Room box empty, 'Check out' shows 'Type the room number first.' under it and the panel says 'Something in the form is not right'",
+    "criterion": 4,
+    "what_should_happen": "Pradeep presses \"Check out\" without typing a room. In place of the Room box's help line it says \"Type the room number first.\", and the panel says \"Something in the form is not right\".",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Check out",
+      "Type the room number first.",
+      "Rooms 101–115 up to 401–415.",
+      "Something in the form is not right"
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "criterion": 4,
+    "checked_by": "browser",
+    "reason": "The Room box turning red is a colour; the words under it are tested."
+  },
+  {
+    "ticket": "F-05",
+    "test": "with 'Checked out at' cleared, 'Fill in when the guest checked out.' shows under that box",
+    "criterion": 5,
+    "what_should_happen": "Pradeep types 214, empties the Checked out at box and presses \"Check out\". In place of that box's help line it says \"Fill in when the guest checked out.\"",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Checked out at",
+      "Check out",
+      "Fill in when the guest checked out.",
+      "Filled in with now. Not in the future, not before the guest checked in."
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "a checkout time later than now shows 'The checkout time cannot be in the future.'",
+    "criterion": 6,
+    "what_should_happen": "Pradeep types 214 and a checkout time an hour from now, then presses \"Check out\". Under the Checked out at box it says \"The checkout time cannot be in the future.\"",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Checked out at",
+      "Check out",
+      "The checkout time cannot be in the future.",
+      "Filled in with now. Not in the future, not before the guest checked in."
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "a checkout time before the guest checked in shows 'The checkout time cannot be before the guest checked in.'",
+    "criterion": 7,
+    "what_should_happen": "Every guest checked in a day before the app opened. Pradeep types 214 and a checkout time two days ago, then presses \"Check out\", and under the Checked out at box it says \"The checkout time cannot be before the guest checked in.\"",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Checked out at",
+      "Check out",
+      "The checkout time cannot be before the guest checked in.",
+      "Filled in with now. Not in the future, not before the guest checked in."
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "a next guest due before the checkout shows 'The next guest cannot be due before the checkout.' under that box",
+    "criterion": 8,
+    "what_should_happen": "Pradeep types 214 and a next guest due an hour before the checkout time, then presses \"Check out\". Under the Next guest due box it says \"The next guest cannot be due before the checkout.\", while the Checked out at box keeps its help line.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Next guest due",
+      "Check out",
+      "The next guest cannot be due before the checkout.",
+      "When the next guest for this room lands. The room’s margin is measured against it.",
+      "Filled in with now. Not in the future, not before the guest checked in."
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "room 999 makes the panel say 'No such room'",
+    "criterion": 9,
+    "what_should_happen": "Pradeep types 999, a room the hotel does not have, and presses \"Check out\". The panel says \"No such room\" and \"There is no room with that number. Rooms run 101–115 up to 401–415.\"",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Check out",
+      "No such room",
+      "There is no room with that number.",
+      "Rooms run 101–115 up to 401–415."
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "checking 214 out a second time makes the panel say 'Nobody is in that room'",
+    "criterion": 10,
+    "what_should_happen": "Room 214's guest has already checked out. When Pradeep checks 214 out again, the panel says \"Nobody is in that room\" and \"This room has no guest to check out. It was already checked out.\"",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Check out",
+      "Nobody is in that room",
+      "This room has no guest to check out.",
+      "It was already checked out."
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "changing any box takes the red line and the message away",
+    "criterion": 11,
+    "what_should_happen": "With \"Type the room number first.\" showing, typing in the Room box takes that line and the panel's message away, and the help line comes back. After a new refusal, typing in the Next guest due box takes that message away too.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx"
+    ],
+    "exact_words": [
+      "Type the room number first.",
+      "Something in the form is not right",
+      "Rooms 101–115 up to 401–415.",
+      "Check out",
+      "No such room"
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "Grace's board has a 'Check out' band with Room, Checked out at, Next guest due and a Check out button, each with its help line",
+    "criterion": 12,
+    "what_should_happen": "On Grace's board a Check out band reads \"Pradeep at the front desk · times in India time\". It has an empty Room box showing \"e.g. 214\" with \"The guest’s room number\", a Checked out at box already filled with now, an empty \"Next guest due (optional)\" box, each with its help line, and a \"Check out\" button.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx"
+    ],
+    "exact_words": [
+      "Check a guest out",
+      "Pradeep at the front desk · times in India time",
+      "Room",
+      "e.g. 214",
+      "The guest’s room number",
+      "Checked out at",
+      "Filled in with now · change it if the guest left earlier",
+      "Next guest due",
+      "(optional)",
+      "When the next guest for this room arrives",
+      "Check out"
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "criterion": 12,
+    "checked_by": "browser",
+    "reason": "The band sitting above the Housekeepers strip is layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-05",
+    "test": "checking 214 out from the band reads 'Room 214 checked out at 10:40 · stay ST0029 · now dirty.' and door 214 turns Dirty",
+    "criterion": 13,
+    "what_should_happen": "At 10:40 Grace types 214 in the board's band and presses \"Check out\". The band answers \"Room 214 checked out at 10:40 · stay ST0029 · now dirty.\", and door 214 on the same board turns Dirty.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/state/AppContext.jsx"
+    ],
+    "exact_words": [
+      "Check a guest out",
+      "Room",
+      "Check out",
+      "Room {no} checked out at {time} · stay {stay} · now {state}.",
+      "Room {no}, {type}, {state}",
+      "Dirty"
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "criterion": 13,
+    "checked_by": "browser",
+    "reason": "The answer line being green is a colour; its words are tested."
+  },
+  {
+    "ticket": "F-05",
+    "test": "the band gives the same refusals as the desk, for an empty, an unknown and an already checked-out room",
+    "criterion": 14,
+    "what_should_happen": "In the board's band, Check out with no room gives \"Something in the form is not right\" and \"Type the room number first.\", room 999 gives \"No such room\", and the already checked-out 214 gives \"Nobody is in that room\". Each comes with the same words as at the desk.",
+    "look_at": [
+      "src/pages/supervisor/Board.jsx",
+      "src/data/messages.js"
+    ],
+    "exact_words": [
+      "Check a guest out",
+      "Room",
+      "Check out",
+      "Something in the form is not right",
+      "Type the room number first.",
+      "No such room",
+      "There is no room with that number.",
+      "Rooms run 101–115 up to 401–415.",
+      "Nobody is in that room",
+      "This room has no guest to check out.",
+      "It was already checked out."
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "by keyboard: Tab goes Room, Checked out at, Next guest due, Check out",
+    "criterion": 15,
+    "what_should_happen": "Using only the keyboard, Tab reaches the Room box. The next three presses of Tab move to Checked out at, then Next guest due, then the \"Check out\" button.",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx"
+    ],
+    "exact_words": [
+      "Room",
+      "Checked out at",
+      "Next guest due",
+      "Check out"
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "test": "by keyboard: Enter in a box sends the form as the button does",
+    "criterion": 15,
+    "what_should_happen": "Pressing Enter in the empty Room box sends the form, and \"Type the room number first.\" appears. Typing 999 and pressing Enter sends it again, and the panel says \"No such room\".",
+    "look_at": [
+      "src/pages/desk/Checkout.jsx"
+    ],
+    "exact_words": [
+      "Room",
+      "Type the room number first.",
+      "No such room"
+    ]
+  },
+  {
+    "ticket": "F-05",
+    "criterion": 16,
+    "checked_by": "browser",
+    "reason": "Below 1024px the panel moving under the form at full width is layout, which a pretend browser does not draw."
+  },
+  {
+    "ticket": "F-05",
+    "criterion": 17,
+    "checked_by": "browser",
+    "reason": "Below 900px the band's boxes and button stacking one per row is layout, which a pretend browser does not draw."
   }
 ]

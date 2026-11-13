@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../api.js';
 
-// What the screens share: a version number that makes them read their data again. Screens read with useGet(),
-// through api.js, exactly as they would talk to a real server.
+// What the screens share: a version number that makes them read their data again.
+// Screens read with useGet() and change things with post(), both through api.js, exactly as they would talk to a
+// real server.
 const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
-  // Bumped as time passes, so the screens read their data again.
+  // Bumped by every change and every 20 seconds, so the screens read their data again (a real frontend refetches).
   const [version, setVersion] = useState(0);
 
   // Time passes while the page is open, so the minutes on a room grow on their own.
@@ -15,11 +16,20 @@ export function AppProvider({ children }) {
     return () => clearInterval(timer);
   }, []);
 
-  const value = { version };
+  /** A request that changes the data, such as a checkout. */
+  async function post(path, body) {
+    const answer = await api.post(path, body);
+    if (answer.status < 300) {
+      setVersion((v) => v + 1);
+    }
+    return answer;
+  }
+
+  const value = { version, post };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
-function useApp() {
+export function useApp() {
   return useContext(AppContext);
 }
 
